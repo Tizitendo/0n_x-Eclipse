@@ -1,4 +1,4 @@
-# Onyx-Typhoon
+# Onyx-Eclipse
 
 - Adds the cut Eclipse gamemode back into the game
 1) StageStart, Director Credits: +500%
