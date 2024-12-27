@@ -1,0 +1,45 @@
+{
+    "gamemode.eclipse.name" : "Eclipse",
+    "difficulty": {
+        "eclipse": {
+            "name": "Eclipse",
+            "description": "<#9ec3e9>\"Cast all hope aside. This planet rises against you.\"</c>\n\nStarts at baseline Monsoon difficulty"
+        },
+        "eclipse1": {
+            "name": "Eclipse (1)",
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>"
+        },
+        "eclipse2": {
+            "name": "Eclipse (2)",
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>"
+        },
+        "eclipse3": {
+            "name": "Eclipse (3)",
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>"
+        },
+        "eclipse4": {
+            "name": "Eclipse (4)",
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>"
+        },
+        "eclipse5": {
+            "name": "Eclipse (5)",
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>"
+        },
+        "eclipse6": {
+            "name": "Eclipse (6)",
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>\n( 6 )  Enemy Health/Damage: <r>+50%</c>"
+        },
+        "eclipse7": {
+            "name": "Eclipse (7)",
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>\n( 6 )  Enemy Health/Damage: <r>+50%</c>\n( 7 )  Enemy Cooldowns: <r>-50%</c>"
+        },
+        "eclipse8": {
+            "name": "Eclipse (8)",
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>\n( 6 )  Enemy Health/Damage: <r>+50%</c>\n( 7 )  Enemy Cooldowns: <r>-50%</c>\n( 8 )  Allies receive <r>permanent damage</c>"
+        },
+        "eclipse9": {
+            "name": "<#b53f80>Eclipse (9)",
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>\n( 6 )  Enemy Health/Damage: <r>+50%</c>\n( 7 )  Enemy Cooldowns: <r>-50%</c>\n( 8 )  Allies receive <r>permanent damage</c>\n<#b53f80>( 9 )  Includes All Typhoon Modifiers</c>"
+        }
+    }
+}
