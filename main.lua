@@ -114,7 +114,7 @@ Initialize(function()
     end)
 
     local PlayerIndex = 1
-    Callback.add("onPlayerInit", "OnyxEclipse-onPlayerInit", function(self, other, result, args)
+    Callback.add("onPlayerInit", "OnyxEclipse-onPlayerInit", function(self)
         if (Player.get_client():same(self)) then
             player = {}
             PlayerIndex = 1
@@ -123,7 +123,7 @@ Initialize(function()
         PlayerIndex = PlayerIndex + 1
     end)
 
-    Callback.add("onStep", "OnyxEclipse-onStep", function(self, other, result, args)
+    Callback.add("onStep", "OnyxEclipse-onStep", function()
         -- open the eclipse menu
         if Eclipse:is_active() then
             GM.run_destroy()
@@ -194,7 +194,7 @@ Initialize(function()
 
     local r = 0
     -- draws teleporter radius while timer isn't finished
-    Callback.add("onDraw", "OnyxEclipse-onDraw", function(self, other, result, args)
+    Callback.add("onDraw", "OnyxEclipse-onDraw", function()
         if Teleporter then
             if Teleporter.active == 1 and currentEclipse >= 2 then
                 gm.draw_set_circle_precision(128)
@@ -235,7 +235,7 @@ Initialize(function()
         end
     end)
 
-    Callback.add("onSecond", "OnyxEclipse-onSecond", function(self, other, result, args)
+    Callback.add("onSecond", "OnyxEclipse-onSecond", function(arg1, arg2)
         if ExtraCreditsEnabled > 0 then
             Director.points = Director.points + (Director.stages_passed + 1) * 2 + 5
             ExtraCreditsEnabled = ExtraCreditsEnabled - 1
@@ -246,7 +246,7 @@ Initialize(function()
     end)
 
     -- check which eclipse difficulty is active, if any
-    Callback.add("onGameStart", "OnyxEclipse-onGameStart", function(self, other, result, args)
+    Callback.add("onGameStart", "OnyxEclipse-onGameStart", function()
         Director = self
         currentEclipse = 0
         for i = 1, 9 do
@@ -257,7 +257,7 @@ Initialize(function()
     end)
 
     -- reduces hp when entering a new stage and when creating a new ally
-    Callback.add("onStageStart", "OnyxEclipse-onStageStart", function(self, other, result, args)
+    Callback.add("onStageStart", "OnyxEclipse-onStageStart", function()
         FinishedTele = false
         disableChests = true
 
@@ -392,7 +392,8 @@ Initialize(function()
         end
     end)
 
-    Callback.add("onDirectorPopulateSpawnArrays", "SSTyphoonPreLoopMonsters", function(self, other, result, args)
+    Callback.add("onDirectorPopulateSpawnArrays", "SSTyphoonPreLoopMonsters", function()
+        --[[
         if self.loops == 0 and currentEclipse >= 9 then
             -- add loop-exclusive spawns to pre-loop
             local director_spawn_array = Array.wrap(self.monster_spawn_array)
@@ -403,11 +404,17 @@ Initialize(function()
             for _, card_id in ipairs(loop_spawns) do
                 director_spawn_array:push(card_id)
             end
-        end
+        end]]
     end)
 end)
 
 -- Add ImGui window
+gui.add_to_menu_bar(function()
+    for i = 1, 9 do
+        params.Enabled[i] = ImGui.Checkbox("Eclipse " .. i .. " Enabled", params.Enabled[i])
+    end
+    Toml.save_cfg(_ENV["!guid"], params)
+end)
 gui.add_imgui(function()
     if ImGui.Begin("Eclipse") then
         for i = 1, 9 do
