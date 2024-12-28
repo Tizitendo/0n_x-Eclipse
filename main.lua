@@ -27,15 +27,13 @@ local Tele_circles = {}
 local frame = 0
 local ExtraCreditsEnabled = 0
 local alivePlayers = 0
-local Interactables = {gm.constants.oChest1, gm.constants.oChest2, gm.constants.oChest4, gm.constants.oChest3,
-                       gm.constants.oChest5, gm.constants.oChestHealing1, gm.constants.oChestDamage1,
-                       gm.constants.oChestUtility1, gm.constants.oChestHealing2, gm.constants.oEfChestRain,
+local Interactables = {gm.constants.oChest1, gm.constants.oChest2, gm.constants.oChest5, gm.constants.oChestHealing1,
+                       gm.constants.oChestDamage1, gm.constants.oChestUtility1, gm.constants.oChestHealing2,
                        gm.constants.oChestDamage2, gm.constants.oChestUtility2, gm.constants.oGunchest,
-                       gm.constants.oShop1, gm.constants.oShop2, gm.constants.CustomObject_pInteractable,
-                       gm.constants.oShrine1, gm.constants.oShrine2, gm.constants.oShrine3, gm.constants.oShrine4,
-                       gm.constants.oShrine5, gm.constants.oShrine6, gm.constants.oShrineMountainS,
-                       gm.constants.oActivator, gm.constants.oChestToxin, gm.constants.oBarrelEquipment,
-                       gm.constants.oTeleporter, gm.constants.oBlastdoorPanel, gm.constants.oShopEquipment}
+                       gm.constants.oChest4, gm.constants.oEfChestRain, gm.constants.oShop1, gm.constants.oShop2,
+                       gm.constants.oActivator, gm.constants.oBarrelEquipment, gm.constants.oShopEquipment,
+                       gm.constants.oTeleporter, gm.constants.oBlastdoorPanel, gm.constants.oShrine1,
+                       gm.constants.oShrine2, gm.constants.oShrine3, gm.constants.oShrine4, gm.constants.oShrine5}
 
 -- Parameters
 local TeleColor = 190540540
@@ -74,19 +72,22 @@ Initialize(function()
         Eclipse:set_sprite(Resources.sprite_load("Onyx", "EclipseIcon", PATH .. "StartEclipse.png", 1, 12, 12),
             Resources.sprite_load("Onyx", "EclipseIcon2x", PATH .. "StartEclipse_2x.png", 4, 20, 19))
     elseif MaxEclipse <= 9 then
-        Eclipse:set_sprite(Resources.sprite_load("Onyx", "EclipseIconTyphoon", PATH .. "StartEclipseTyphoon.png", 1, 12, 12),
+        Eclipse:set_sprite(
+            Resources.sprite_load("Onyx", "EclipseIconTyphoon", PATH .. "StartEclipseTyphoon.png", 1, 12, 12),
             Resources.sprite_load("Onyx", "EclipseIconTyphoon2x", PATH .. "StartEclipseTyphoon_2x.png", 4, 20, 19))
     else
         Eclipse:set_sprite(Resources.sprite_load("Onyx", "EclipseIcon", PATH .. "StartEclipseGold.png", 1, 12, 12),
-        Resources.sprite_load("Onyx", "EclipseIcon2x", PATH .. "StartEclipseGold_2x.png", 4, 20, 19))        
+            Resources.sprite_load("Onyx", "EclipseIcon2x", PATH .. "StartEclipseGold_2x.png", 4, 20, 19))
     end
     Eclipse:set_primary_color(Color(0x62a8e5))
     Eclipse:set_sound(Resources.sfx_load("Onyx", "EclipseSfx", PATH .. "eclipse.ogg"))
 
     -- add secret eclipse 9
-    eclipses[9]:set_sprite(Resources.sprite_load("Onyx", "Eclipse9", PATH .. "Eclipse9.png", 2,
-        13, 13), Resources.sprite_load("Onyx", "Eclipse9_2x", PATH .. "Eclipse9_2x.png", 6,
-        20, 19))
+    eclipses[9]:set_scaling(0.2, 4.0, 1.7)
+    eclipses[9]:set_monsoon_or_higher(true)
+    eclipses[9]:set_allow_blight_spawns(true)
+    eclipses[9]:set_sprite(Resources.sprite_load("Onyx", "Eclipse9", PATH .. "Eclipse9.png", 2, 13, 13),
+        Resources.sprite_load("Onyx", "Eclipse9_2x", PATH .. "Eclipse9_2x.png", 6, 20, 19))
     local EclipseDisplay = List.wrap(GM.variable_global_get("difficulty_display_list_eclipse"))
     EclipseDisplay:add(Wrap.wrap(eclipses[9]))
 
@@ -114,6 +115,10 @@ Initialize(function()
 
     local PlayerIndex = 1
     Callback.add("onPlayerInit", "OnyxEclipse-onPlayerInit", function(self, other, result, args)
+        if (self.player_p_number == Player.get_client().player_p_number) then
+            player = {}
+            PlayerIndex = 1
+        end
         player[PlayerIndex] = self
         PlayerIndex = PlayerIndex + 1
     end)
@@ -128,22 +133,25 @@ Initialize(function()
         end
 
         -- get number of alive players
+        alivePlayers = 0
         for i = 1, #player do
             if not player[i].dead then
                 alivePlayers = alivePlayers + 1
             end
         end
 
+        ---Add Eclipse modifiers---
+
         if Teleporter then
             if currentEclipse >= 2 and Teleporter.active == 1 then
                 -- don't let tp timer count up if player is outside radius
                 for i = 1, #player do
-                    if not player[i].dead then
+                    if player[i].dead == false then
                         local DistanceX, DistanceY
                         DistanceX = player[i].x - Teleporter.x
                         DistanceY = player[i].y - Teleporter.y
                         if math.sqrt(DistanceX * DistanceX + DistanceY * DistanceY) >= TeleRadius then
-                            Teleporter.time = Teleporter.time - 1 / alivePlayers
+                            Teleporter.time = Teleporter.time - (1 / alivePlayers)
                         end
                     end
                 end
@@ -156,7 +164,7 @@ Initialize(function()
                         if v.active == 0 then
                             DistanceX = v.x - Teleporter.x
                             DistanceY = v.y - Teleporter.y
-                            if math.sqrt(DistanceX * DistanceX + DistanceY * DistanceY) >= TeleRadius then
+                            if math.sqrt(DistanceX ^ 2 + DistanceY ^ 2) >= TeleRadius then
                                 v.active = -1
                             end
                         end
@@ -189,7 +197,7 @@ Initialize(function()
     Callback.add("onDraw", "OnyxEclipse-onDraw", function(self, other, result, args)
         if Teleporter then
             if Teleporter.active == 1 and currentEclipse >= 2 then
-                gm.draw_set_circle_precision(256)
+                gm.draw_set_circle_precision(128)
                 gm.draw_set_alpha(0.8)
                 if r < 0.999 then
                     r = r + (1 - r) * 0.05
@@ -260,22 +268,44 @@ Initialize(function()
         CurseIndex = 0
     end)
 
-    gm.post_script_hook(gm.constants.interactable_set_active, function(self, other, result, args)
+    -- doesn't use drop_gold_and_exp to keep barrel gold the same
+    gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
+        if currentEclipse >= 1 then
+            self.exp_worth = self.exp_worth * 0.9
+        end
+
+        if currentEclipse >= 9 then
+            self.exp_worth = self.exp_worth * 0.7
+        end
+    end)
+
+    -- decrease gold and xp gain outside of tp zone
+    gm.pre_script_hook(gm.constants.drop_gold_and_exp, function(self, other, result, args)
+        if Teleporter and currentEclipse >= 2 then
+            local DistanceX, DistanceY
+            for i = 1, #player do
+                DistanceX = player[i].x - Teleporter.x
+                DistanceY = player[i].y - Teleporter.y
+                if Director.teleporter_active == 1 and math.sqrt(DistanceX * DistanceX + DistanceY * DistanceY) >=
+                    TeleRadius then
+                    args[3].value = args[3].value * (1 - 0.3 / alivePlayers)
+                end
+            end
+        end
+    end)
+
+    gm.pre_script_hook(gm.constants.interactable_set_active, function(self, other, result, args)
         -- get teleporter when interacting with it
         if self.object_index == gm.constants.oTeleporter or self.object_index == gm.constants.oTeleporterEpic or
             self.object_index == gm.constants.oBlastdoorPanel then
             r = 0
             Teleporter = self
         end
-        -- reduce enemy spawning after starting provi fight
+
         if self.object_index == gm.constants.oCommand then
-            -- Director.peace = true
+            -- reduce enemy spawning after starting provi fight
             Director.bonus_rate = 0.5
             Director.bonus_spawn_delay = 0.5
-        end
-
-        -- oNoNavHere oBFloorNoSpawn oBNoSpawn oB
-        if self.object_index == gm.constants.oCommand then
             local floors = Object.wrap(Instance.find(gm.constants.oB).object_index)
             local Spawns = Instance.find_all({gm.constants.oNoNavHere, gm.constants.oBFloorNoSpawn, gm.constants.oB,
                                               gm.constants.oBNoSpawnHalf, gm.constants.oBFloorNoSpawn2})
@@ -318,22 +348,25 @@ Initialize(function()
             actor.attack_speed = actor.attack_speed + actor.attack_speed_base * 0.15
             actor.pHmax_raw = actor.pHmax_raw + actor.pHmax_base * 0.15
             actor.pHmax = actor.pHmax + actor.pHmax_base * 0.15
-    
+
             -- the cdr variable does nothing at this point. handle skill cdr manually.
-            local skills = {
-                actor:get_active_skill(Skill.SLOT.primary),
-                actor:get_active_skill(Skill.SLOT.secondary),
-                actor:get_active_skill(Skill.SLOT.utility),
-                actor:get_active_skill(Skill.SLOT.special),
-            }
+            local skills = {actor:get_active_skill(Skill.SLOT.primary), actor:get_active_skill(Skill.SLOT.secondary),
+                            actor:get_active_skill(Skill.SLOT.utility), actor:get_active_skill(Skill.SLOT.special)}
             for _, skill in ipairs(skills) do
                 skill.cooldown = math.ceil(skill.cooldown * 0.85)
             end
         end
     end)
 
-    -- disable gold drops on enemies spawned after tp event
+    -- increase chest prices
+    gm.pre_script_hook(gm.constants.interactable_init_cost, function(self, other, result, args)
+        if args[2].value == 0 and currentEclipse >= 5 then
+            args[3].value = args[3].value * PriceIncrease
+        end
+    end)
+
     gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
+        -- disable gold drops on enemies spawned after tp event
         if FinishedTele and self.team == 2 then
             self.exp_worth = 0
         end
@@ -356,47 +389,14 @@ Initialize(function()
         end
     end)
 
-    -- increase chest prices
-    gm.pre_script_hook(gm.constants.interactable_init_cost, function(self, other, result, args)
-        if args[2].value == 0 and currentEclipse >= 5 then
-            args[3].value = args[3].value * PriceIncrease
-        end
-    end)
-
-    -- decrease gold and xp gain outside of tp zone
-    gm.pre_script_hook(gm.constants.drop_gold_and_exp, function(self, other, result, args)
-        if Teleporter and currentEclipse >= 2 then
-            local DistanceX, DistanceY
-            for i = 1, #player do
-                DistanceX = player[i].x - Teleporter.x
-                DistanceY = player[i].y - Teleporter.y
-                if Director.teleporter_active == 1 and math.sqrt(DistanceX * DistanceX + DistanceY * DistanceY) >=
-                    TeleRadius then
-                    args[3].value = args[3].value * (1 - 0.3 / alivePlayers)
-                end
-            end
-        end
-    end)
-
-    -- doesn't use drop_gold_and_exp to keep barrel gold the same
-    gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
-        if currentEclipse >= 1 then
-            self.exp_worth = self.exp_worth * 0.9
-        end
-
-        if currentEclipse >= 9 then
-            self.exp_worth = self.exp_worth * 0.7
-        end
-    end)
-
     Callback.add("onDirectorPopulateSpawnArrays", "SSTyphoonPreLoopMonsters", function(self, other, result, args)
         if self.loops == 0 and currentEclipse >= 9 then
             -- add loop-exclusive spawns to pre-loop
             local director_spawn_array = Array.wrap(self.monster_spawn_array)
             local current_stage = Stage.wrap(GM._mod_game_getCurrentStage())
-    
+
             local loop_spawns = List.wrap(current_stage.spawn_enemies_loop)
-    
+
             for _, card_id in ipairs(loop_spawns) do
                 director_spawn_array:push(card_id)
             end
