@@ -115,7 +115,7 @@ Initialize(function()
 
     local PlayerIndex = 1
     Callback.add("onPlayerInit", "OnyxEclipse-onPlayerInit", function(self, other, result, args)
-        if (self.player_p_number == Player.get_client().player_p_number) then
+        if (Player.get_client():same(self)) then
             player = {}
             PlayerIndex = 1
         end
@@ -306,7 +306,10 @@ Initialize(function()
             -- reduce enemy spawning after starting provi fight
             Director.bonus_rate = 0.5
             Director.bonus_spawn_delay = 0.5
-            local floors = Object.wrap(Instance.find(gm.constants.oB).object_index)
+            local floors = nil
+            if Instance.find(gm.constants.oB).object_index ~= nil then
+                floors = Object.wrap(Instance.find(gm.constants.oB).object_index)
+            end
             local Spawns = Instance.find_all({gm.constants.oNoNavHere, gm.constants.oBFloorNoSpawn, gm.constants.oB,
                                               gm.constants.oBNoSpawnHalf, gm.constants.oBFloorNoSpawn2})
 
