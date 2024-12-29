@@ -247,7 +247,7 @@ Initialize(function()
 
     -- check which eclipse difficulty is active, if any
     Callback.add("onGameStart", "OnyxEclipse-onGameStart", function()
-        Director = self
+        Director = GM._mod_game_getDirector()
         currentEclipse = 0
         for i = 1, 9 do
             if eclipses[i]:is_active() then
@@ -393,8 +393,7 @@ Initialize(function()
     end)
 
     Callback.add("onDirectorPopulateSpawnArrays", "SSTyphoonPreLoopMonsters", function()
-        --[[
-        if self.loops == 0 and currentEclipse >= 9 then
+        if Director.loops == 0 and currentEclipse >= 9 then
             -- add loop-exclusive spawns to pre-loop
             local director_spawn_array = Array.wrap(self.monster_spawn_array)
             local current_stage = Stage.wrap(GM._mod_game_getCurrentStage())
@@ -404,7 +403,7 @@ Initialize(function()
             for _, card_id in ipairs(loop_spawns) do
                 director_spawn_array:push(card_id)
             end
-        end]]
+        end
     end)
 end)
 
