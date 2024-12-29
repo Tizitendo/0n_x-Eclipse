@@ -265,6 +265,13 @@ Initialize(function()
             Director.bonus_rate = Director.bonus_rate + 2
             ExtraCreditsEnabled = 30
         end
+
+        allies = Instance.find_all(gm.constants.pFriend)
+        for i, ally in ipairs(allies) do
+            for i = 0, CurseIndex do
+                Curse.remove(ally.value, "OnyxEclipse-PermaDamage" .. tostring(i)) -- reset ally curse when entering a new stage
+            end
+        end
         CurseIndex = 0
     end)
 
@@ -337,7 +344,7 @@ Initialize(function()
         end
 
         -- reduce enemy skill cooldowns
-        if currentEclipse >= 7 then
+        if currentEclipse >= 7 and self.team == 2 then
             local actor = Instance.wrap(self)
             local skills = {actor:get_active_skill(Skill.SLOT.primary), actor:get_active_skill(Skill.SLOT.secondary),
                             actor:get_active_skill(Skill.SLOT.utility), actor:get_active_skill(Skill.SLOT.special)}
