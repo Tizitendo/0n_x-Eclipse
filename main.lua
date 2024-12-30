@@ -27,6 +27,7 @@ local Tele_circles = {}
 local frame = 0
 local ExtraCreditsEnabled = 0
 local alivePlayers = 0
+local EndFight = false
 local Interactables = {gm.constants.oChest1, gm.constants.oChest2, gm.constants.oChest5, gm.constants.oChestHealing1,
                        gm.constants.oChestDamage1, gm.constants.oChestUtility1, gm.constants.oChestHealing2,
                        gm.constants.oChestDamage2, gm.constants.oChestUtility2, gm.constants.oGunchest,
@@ -123,15 +124,31 @@ Initialize(function()
         PlayerIndex = PlayerIndex + 1
     end)
 
-    Callback.add("onStep", "OnyxEclipse-onStep", function()
-        -- open the eclipse menu
-        if Eclipse:is_active() then
-            GM.run_destroy()
-            GM.variable_global_set("__gamemode_current", 1)
-            GM.game_lobby_start()
-            GM.room_goto(gm.constants.rSelect)
+    -- check which eclipse difficulty is active, if any
+    Callback.add("onGameStart", "OnyxEclipse-onGameStart", function()
+        local function OpenEclipse()
+            if Eclipse:is_active() then
+                GM.run_destroy()
+                GM.variable_global_set("__gamemode_current", 1)
+                GM.game_lobby_start()
+                GM.room_goto(gm.constants.rSelect)
+            end
         end
+        Alarm.create(OpenEclipse, 1)
 
+        EndFight = false
+        Director = GM._mod_game_getDirector()
+        Director.bonus_spawn_delay = 100
+        Director.rate = 0
+        currentEclipse = 0
+        for i = 1, 9 do
+            if eclipses[i]:is_active() then
+                currentEclipse = i
+            end
+        end
+    end)
+
+    Callback.add("onStep", "OnyxEclipse-onStep", function()
         -- get number of alive players
         alivePlayers = 0
         for i = 1, #player do
@@ -189,6 +206,13 @@ Initialize(function()
                 Director.bonus_spawn_delay = 0
                 FinishedTele = true
             end
+
+            if EndFight and Director:alarm_get(1) == 0 then
+                local function DecreaseSpawnRate()
+                    Director:alarm_set(1, Director:alarm_get(1) * 5)
+                end
+                Alarm.create(DecreaseSpawnRate, 10)
+            end
         end
     end)
 
@@ -243,15 +267,9 @@ Initialize(function()
                 Director.bonus_rate = Director.bonus_rate - 2
             end
         end
-    end)
-
-    -- check which eclipse difficulty is active, if any
-    Callback.add("onGameStart", "OnyxEclipse-onGameStart", function()
-        Director = GM._mod_game_getDirector()
-        currentEclipse = 0
-        for i = 1, 9 do
-            if eclipses[i]:is_active() then
-                currentEclipse = i
+        if EndFight then
+            if Director.points > 10 then
+                Director.points = Director.points * 0.95
             end
         end
     end)
@@ -313,6 +331,7 @@ Initialize(function()
             -- reduce enemy spawning after starting provi fight
             Director.bonus_rate = 0.5
             Director.bonus_spawn_delay = 0.5
+            EndFight = true
             local floors = nil
             if Instance.find(gm.constants.oB).object_index ~= nil then
                 floors = Object.wrap(Instance.find(gm.constants.oB).object_index)
