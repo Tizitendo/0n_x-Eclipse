@@ -146,6 +146,10 @@ Initialize(function()
                 currentEclipse = i
             end
         end
+
+        if currentEclipse >= 9 then
+            Director.elite_spawn_chance = 0.4
+        end
     end)
 
     Callback.add("onStep", "OnyxEclipse-onStep", function()
@@ -200,20 +204,20 @@ Initialize(function()
                 end
             end
             -- reenable enemy spawning after tp event
-            if currentEclipse >= 3 and Director:alarm_get(1) == -1 and not FinishedTele then
+            if currentEclipse >= 3 and Director:alarm_get(1) == -1 then
                 Director:alarm_set(1, 600)
                 Director.bonus_rate = 1
                 Director.bonus_spawn_delay = 0
                 FinishedTele = true
             end
-
-            if EndFight and Director:alarm_get(1) == 0 then
+        end
+        
+            if EndFight and Director:alarm_get(1) == 1 then
                 local function DecreaseSpawnRate()
                     Director:alarm_set(1, Director:alarm_get(1) * 5)
                 end
-                Alarm.create(DecreaseSpawnRate, 10)
+                Alarm.create(DecreaseSpawnRate, 5)
             end
-        end
     end)
 
     local r = 0
@@ -265,11 +269,6 @@ Initialize(function()
             ExtraCreditsEnabled = ExtraCreditsEnabled - 1
             if ExtraCreditsEnabled == 1 then
                 Director.bonus_rate = Director.bonus_rate - 2
-            end
-        end
-        if EndFight then
-            if Director.points > 10 then
-                Director.points = Director.points * 0.95
             end
         end
     end)
@@ -418,14 +417,14 @@ Initialize(function()
         end
     end)
 
-    Callback.add("onDirectorPopulateSpawnArrays", "SSTyphoonPreLoopMonsters", function()
+    Callback.add(Callback.TYPE.onDirectorPopulateSpawnArrays, "OnyxEclipse-onDirectorPopulateSpawnArrays", function()
         if Director.loops == 0 and currentEclipse >= 9 then
             -- add loop-exclusive spawns to pre-loop
-            local director_spawn_array = Array.wrap(self.monster_spawn_array)
+            local director_spawn_array = Director.monster_spawn_array
             local current_stage = Stage.wrap(GM._mod_game_getCurrentStage())
-
+    
             local loop_spawns = List.wrap(current_stage.spawn_enemies_loop)
-
+    
             for _, card_id in ipairs(loop_spawns) do
                 director_spawn_array:push(card_id)
             end
