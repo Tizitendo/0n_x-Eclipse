@@ -401,9 +401,9 @@ Initialize(function()
 
         -- increase enemy max health and damage
         if currentEclipse >= 6 and self.team == 2.0 then
-            self.maxhp = self.maxhp * EnemyStats
-            self.maxhp_base = self.maxhp_base * EnemyStats
-            self.hp = self.hp * EnemyStats
+            --self.maxhp = self.maxhp * EnemyStats
+            --self.maxhp_base = self.maxhp_base * EnemyStats
+            --self.hp = self.hp * EnemyStats
             self.damage_base = self.damage_base * EnemyStats
         end
     end)
