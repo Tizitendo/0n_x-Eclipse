@@ -431,7 +431,7 @@ Initialize(function()
                 currentArtifact[i] = PickableArtifacts[RandomArti]
                 table.remove(PickableArtifacts, RandomArti)
                 
-                currentArtifact[i] = 7
+                --currentArtifact[i] = 7
                 local Artifact = gm.variable_global_get("class_artifact")[currentArtifact[i]]
                 local function DisplayCurrentArtifact()
                     if i == 1 then
