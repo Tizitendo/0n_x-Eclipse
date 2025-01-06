@@ -400,7 +400,6 @@ Initialize(function()
     gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
         if currentEclipse ~= 0 then
             eclipses[currentEclipse]:set_allow_blight_spawns(true)
-            log.warning("hi")
         end
         NumArtifacts = 1
         if args[1] == 9 then
