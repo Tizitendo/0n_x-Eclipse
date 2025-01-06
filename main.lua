@@ -16,9 +16,12 @@ end)
 local Eclipse = nil
 local eclipses = {}
 local currentEclipse = 0
+local currentArtifact = {}
+local NumArtifacts = 1
 local Teleporter = nil
 local disableChests = true
 local CurseIndex = 0
+local ItemDropChance = 10
 local Director = nil
 local FinishedTele = false
 local player = {}
@@ -40,13 +43,16 @@ local Interactables = {gm.constants.oChest1, gm.constants.oChest2, gm.constants.
 local TeleColor = 190540540
 local TeleRadius = 600
 local PriceIncrease = 1.6
-local EnemyStats = 1.5
-local EnemySkillcdr = 0.5
+local EnemyStats = 1.4
+local EnemySkillcdr = 0.75
 local EnemySpeed = 1.25
 
 Initialize(function()
     Curse = mods["Klehrik-CurseHelper"].setup()
     Difficulty.new("ror", "eclipse9")
+    local spiritStatHandler = Item.new("OnyxEclipse", "spiritStatHandler", true)
+    spiritStatHandler.is_hidden = true
+    spiritStatHandler:toggle_loot(false)
 
     -- find eclipse difficulties
     for i = 1, 9 do
@@ -65,6 +71,10 @@ Initialize(function()
         eclipses[i]:set_sprite(Resources.sprite_load("Onyx", "GoldEclipse" .. i, PATH .. "GoldEclipse" .. i .. ".png",
             2, 13, 13), Resources.sprite_load("Onyx", "GoldEclipse" .. i .. "_2x",
             PATH .. "GoldEclipse" .. i .. "_2x.png", 4, 20, 19))
+    end
+
+    for i = 1, 14 do
+        Resources.sprite_load("Onyx", "Arti" .. i, PATH .. "arti" .. i .. ".png", 1, 0, 0)
     end
 
     -- add difficulty that opens eclipse menu
@@ -140,6 +150,9 @@ Initialize(function()
         Director = GM._mod_game_getDirector()
         Director.bonus_spawn_delay = 100
         Director.rate = 0
+        for i = 1, NumArtifacts do
+            currentArtifact[i] = 0
+        end
         currentEclipse = 0
         for i = 1, 9 do
             if eclipses[i]:is_active() then
@@ -211,13 +224,13 @@ Initialize(function()
                 FinishedTele = true
             end
         end
-        
-            if EndFight and Director:alarm_get(1) == 1 then
-                local function DecreaseSpawnRate()
-                    Director:alarm_set(1, Director:alarm_get(1) * 5)
-                end
-                Alarm.create(DecreaseSpawnRate, 5)
+
+        if EndFight and Director:alarm_get(1) == 1 then
+            local function DecreaseSpawnRate()
+                Director:alarm_set(1, Director:alarm_get(1) * 5)
             end
+            Alarm.create(DecreaseSpawnRate, 5)
+        end
     end)
 
     local r = 0
@@ -275,6 +288,7 @@ Initialize(function()
 
     -- reduces hp when entering a new stage and when creating a new ally
     Callback.add("onStageStart", "OnyxEclipse-onStageStart", function()
+        Tele_circles = {}
         FinishedTele = false
         disableChests = true
 
@@ -283,10 +297,11 @@ Initialize(function()
             ExtraCreditsEnabled = 30
         end
 
+        -- reset ally curse when entering a new stage
         allies = Instance.find_all(gm.constants.pFriend)
         for i, ally in ipairs(allies) do
             for i = 0, CurseIndex do
-                Curse.remove(ally.value, "OnyxEclipse-PermaDamage" .. tostring(i)) -- reset ally curse when entering a new stage
+                Curse.remove(ally.value, "OnyxEclipse-PermaDamage" .. tostring(i))
             end
         end
         CurseIndex = 0
@@ -295,7 +310,7 @@ Initialize(function()
     -- doesn't use drop_gold_and_exp to keep barrel gold the same
     gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
         if currentEclipse >= 1 then
-            self.exp_worth = self.exp_worth * 0.9
+            self.exp_worth = self.exp_worth * 0.85
         end
 
         if currentEclipse >= 9 then
@@ -359,10 +374,6 @@ Initialize(function()
             self.pHmax_raw = self.pHmax_raw * EnemySpeed
             self.pHmax = self.pHmax * EnemySpeed
             self.attack_speed = self.attack_speed * EnemySpeed
-        end
-
-        -- reduce enemy skill cooldowns
-        if currentEclipse >= 7 and self.team == 2 then
             local actor = Instance.wrap(self)
             local skills = {actor:get_active_skill(Skill.SLOT.primary), actor:get_active_skill(Skill.SLOT.secondary),
                             actor:get_active_skill(Skill.SLOT.utility), actor:get_active_skill(Skill.SLOT.special)}
@@ -386,6 +397,159 @@ Initialize(function()
         end
     end)
 
+    gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
+        if currentEclipse ~= 0 then
+            eclipses[currentEclipse]:set_allow_blight_spawns(true)
+            log.warning("hi")
+        end
+        NumArtifacts = 1
+        if args[1] == 9 then
+            NumArtifacts = 2
+        end
+        if currentEclipse >= 7 then
+            for i = 1, NumArtifacts do
+                if currentArtifact[i] ~= nil and currentArtifact[i] ~= 0  then
+                    player[1]:item_remove(Item.find("ror", "glassStatHandler"))
+                    player[1]:item_remove(Item.find("ror", "distortionStatHandler"))
+                    player[1]:item_remove(spiritStatHandler)
+                    player[1]:recalculate_stats()
+                    player[1]:remove_skill_override(0, 0)
+                    player[1]:remove_skill_override(1, 0)
+                    player[1]:remove_skill_override(2, 0)
+                    player[1]:remove_skill_override(3, 0)
+                    local Artifact = gm.variable_global_get("class_artifact")[currentArtifact[i]]
+                    Artifact[9] = false
+                    ItemDropChance = 20
+                    currentArtifact[i] = 0
+                end
+            end
+
+            local PickableArtifacts = {1, 2, 3, 4, 5, 7, 9, 10, 11, 12, 13, 14}
+            local level_subname_length = 0
+            for i = 1, NumArtifacts do
+                local RandomArti = math.random(1, #PickableArtifacts)
+                currentArtifact[i] = PickableArtifacts[RandomArti]
+                table.remove(PickableArtifacts, RandomArti)
+                
+                currentArtifact[i] = 7
+                local Artifact = gm.variable_global_get("class_artifact")[currentArtifact[i]]
+                local function DisplayCurrentArtifact()
+                    if i == 1 then
+                        level_subname_length = Global.level_subname:len()
+                    end
+                    local numSpaces = (level_subname_length - Language.translate_token(Artifact[3]):len() + 1) / 2
+                    local Spaces = ""
+                    for o = 1, numSpaces do
+                        Spaces = Spaces .. " "
+                    end
+                    local Spaces2 = ""
+                    numSpaces = (level_subname_length - 6) / 2
+                    for o = 1, numSpaces do
+                        Spaces2 = Spaces2 .. " "
+                    end
+                    Global.level_subname = Global.level_subname .. "\n" .. Spaces ..
+                                               Language.translate_token(Artifact[3]) .. "\n" .. Spaces2 .. "<spr Arti" ..
+                                               currentArtifact[i] .. " 1>"
+                end
+                Alarm.create(DisplayCurrentArtifact, 1)
+                if currentArtifact[i] ~= 3 and currentArtifact[i] ~= 9 and currentArtifact[i] ~= 5 and
+                    currentArtifact[i] ~= 7 then
+                    Artifact[9] = true
+                end
+                if currentArtifact[i] == 3 then
+                    local function WaitforPlayerInit()
+                        if player[1]:item_stack_count(Item.find("ror", "distortionStatHandler")) == 0 then
+                            player[1]:item_give(Item.find("ror", "distortionStatHandler"))
+                        end
+                        player[1]:add_skill_override(math.random(0, 3), 0)
+                    end
+                    Alarm.create(WaitforPlayerInit, 1)
+                end
+                if currentArtifact[i] == 9 then
+                    local function WaitforPlayerInit()
+                        if player[1]:item_stack_count(spiritStatHandler) == 0 then
+                            player[1]:item_give(spiritStatHandler)
+                        end
+                    end
+                    Alarm.create(WaitforPlayerInit, 1)
+                end
+                if currentArtifact[i] == 5 then
+                    local function WaitforPlayerInit()
+                        if player[1]:item_stack_count(Item.find("ror", "glassStatHandler")) == 0 then
+                            player[1]:item_give(Item.find("ror", "glassStatHandler"))
+                        end
+                    end
+                    Alarm.create(WaitforPlayerInit, 1)
+                end
+                if currentArtifact[i] == 1 then
+                    eclipses[currentEclipse]:set_allow_blight_spawns(false)
+                end
+            end
+        end
+    end)
+
+    local defaultcooldown = {}
+    Callback.add("onMinute", "OnyxEclipse-onMinute", function(minute, second)
+        for i = 1, NumArtifacts do
+            if currentArtifact[i] == 3 then
+                player[1]:remove_skill_override(0, 0)
+                player[1]:remove_skill_override(1, 0)
+                player[1]:remove_skill_override(2, 0)
+                player[1]:remove_skill_override(3, 0)
+                player[1]:add_skill_override(math.random(0, 3), 0)
+            end
+        end
+    end)
+
+    spiritStatHandler:onPostStep(function(actor, stack)
+        actor.pHmax = actor.pHmax_raw - 2 * (actor.hp / actor.maxhp) + 2
+    end)
+
+    Callback.add(Callback.TYPE.onKillProc, "OnyxEclipse-onKillProc", function(victim, killer)
+        for i = 1, NumArtifacts do
+            if currentArtifact[i] == 7 and not FinishedTele and math.random(1, ItemDropChance) == ItemDropChance then
+                if math.random(1, 100) == 100 then
+                    Item.get_random(2):create(victim.x, victim.y)
+                elseif math.random(1, 4) == 4 then
+                    Item.get_random(1):create(victim.x, victim.y)
+                elseif math.random(1, 5) == 5 then
+                    Item.get_random(3):create(victim.x, victim.y)
+                else
+                    Item.get_random(0):create(victim.x, victim.y)
+                end
+                ItemDropChance = ItemDropChance + 8
+            end
+        end
+    end)
+
+    gm.post_script_hook(gm.constants.interactable_init, function(self, other, result, args)
+        for i = 1, NumArtifacts do
+            if currentArtifact[i] == 7 then
+                local function myFunc(actor)
+                    if actor.object_index ~= gm.constants.oTeleporter and actor.object_index ~=
+                        gm.constants.oBlastdoorPanel and actor.object_index ~= gm.constants.oTeleporterEpic and
+                        actor.object_index ~= gm.constants.oCustomObject_pInteractable and actor.object_index ~=
+                        gm.constants.oCommand and actor.object_index ~= gm.constants.oRiftChest1 and actor.object_index ~=
+                        gm.constants.oDoor and actor.object_index ~= gm.constants.oMedbay and actor.object_index ~=
+                        gm.constants.oGauss and actor.object_index ~= gm.constants.oUsechest and actor.object_index ~=
+                        gm.constants.oUsechestActive and actor.object_index ~= gm.constants.oGaussActive and
+                        actor.object_index ~= gm.constants.oHiddenHand and actor.object_index ~= gm.constants.oMedcab and
+                        actor.object_index ~= gm.constants.oChestToxin and actor.object_index ~= gm.constants.oBarrel3 and
+                        actor.object_index ~= gm.constants.oMedbayActive and actor.object_index ~=
+                        gm.constants.oCommandFinal and actor.object_index ~=
+                        gm.constants.oCustomObject_pInteractableCrate and actor.object_index ~=
+                        gm.constants.oCustomObject_pMapObjects and actor.object_index ~= gm.constants.oRoboBuddyBroken and
+                        actor.object_index ~= gm.constants.oDroneRecycler and actor.object_index ~=
+                        gm.constants.oDroneUpgrader then
+                        -- log.warning(actor.value.object_name)
+                        actor:destroy()
+                    end
+                end
+                Alarm.create(myFunc, 1, Instance.wrap(self))
+            end
+        end
+    end)
+
     -- increase chest prices
     gm.pre_script_hook(gm.constants.interactable_init_cost, function(self, other, result, args)
         if args[2].value == 0 and currentEclipse >= 5 then
@@ -399,11 +563,19 @@ Initialize(function()
             self.exp_worth = 0
         end
 
-        -- increase enemy max health and damage
+        for i = 1, NumArtifacts do
+            if self.team == 2 and currentArtifact[i] == 9 then
+                if Instance.wrap(self):item_stack_count(spiritStatHandler) == 0 then
+                    Instance.wrap(self):item_give(spiritStatHandler)
+                end
+            end
+            if self.team == 2 and currentArtifact[i] == 1 then
+                self.exp_worth = self.exp_worth * 1.5
+            end
+        end
+
+        -- increase enemy damage
         if currentEclipse >= 6 and self.team == 2.0 then
-            --self.maxhp = self.maxhp * EnemyStats
-            --self.maxhp_base = self.maxhp_base * EnemyStats
-            --self.hp = self.hp * EnemyStats
             self.damage_base = self.damage_base * EnemyStats
         end
     end)
@@ -422,9 +594,9 @@ Initialize(function()
             -- add loop-exclusive spawns to pre-loop
             local director_spawn_array = Director.monster_spawn_array
             local current_stage = Stage.wrap(GM._mod_game_getCurrentStage())
-    
+
             local loop_spawns = List.wrap(current_stage.spawn_enemies_loop)
-    
+
             for _, card_id in ipairs(loop_spawns) do
                 director_spawn_array:push(card_id)
             end

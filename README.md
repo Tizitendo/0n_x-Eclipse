@@ -6,10 +6,14 @@
 3) Enemies Can Spawn After TP Event
 4) Enemy Speed: +25%
 5) Chest Prices: +60%
-6) Enemy Health/Damage: +50%
-7) Enemy Cooldowns: -50%
-8)  Allies receive permanent damage
-9)  ???
+6) Enemy Health/Damage: +40%
+7) Every Stage, Activate a Random Artifact
+8) Allies receive permanent damage
+9) ???
+
+Artifacts:
+- Honor: Enemies drop 50% more gold and xp, can't spawn bligtheds
+- Sacrifice: Item drop rate lowered with every item dropped this stage
 
 ## Special Thanks To
 * The Return Of Modding Discord, Especially @Kris, @Klehrik and @syntaxevasion
