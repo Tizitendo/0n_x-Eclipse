@@ -1,3 +1,9 @@
+## 1.0.5
+* Rebalanced some artifacts (see readme)
+* Slightly increased eclipse 2 difficulty
+* Reorganized code
+* A bunch of bug and error fixes
+
 ## 1.0.4
 * Replaced Eclipse 7 (Enemy cooldowns -50%) with Activate a Random Artifact every Stage
 * View readme for explanations on some artifact changes
