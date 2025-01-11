@@ -313,7 +313,6 @@ Callback.add("onGameStart", "OnyxEclipse7-onGameStart", function()
     end
 end)
 
-local test = true
 gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
     if currentEclipse ~= 0 then
         eclipses[currentEclipse]:set_allow_blight_spawns(true)
@@ -333,7 +332,6 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
                 player[1]:remove_skill_override(3, 0)
             end
             ItemDropChance = DefaultSacrificeDropChance
-            log.warning(KeepArtifact[i])
             if KeepArtifact[i] == nil or not KeepArtifact[i] then
                 currentArtifact[i] = 0
                 KeepArtifact[i] = false
@@ -508,7 +506,6 @@ gm.post_script_hook(gm.constants.interactable_set_active, function(self, other, 
     for i = 1, NumArtifacts do
         if currentArtifact[i] == 11 and self.object_index == gm.constants.oShrineMountainS then
             local function DoubleMountains()
-                log.warning(Director.mountain)
                 Director.mountain = Director.mountain - 1
                 if Director.mountain == 0 then
                     Director.mountain = 1
@@ -532,8 +529,6 @@ end)
 -- Origin
 Callback.add("onMinute", "OnyxArtifactOrigin-onMinute", function(minute, second)
     for i = 1, NumArtifacts do
-        log.warning(currentArtifact[i])
-        log.warning(minute)
         if currentArtifact[i] == 10 and minute % 5 == 0 then
             local Invasion = Object.find("ror", "ImpPortal")
             for i = 1, minute / 5 do
