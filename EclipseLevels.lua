@@ -344,7 +344,7 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
             currentArtifact[i] = PickableArtifacts[RandomArti]
             table.remove(PickableArtifacts, RandomArti)
 
-            currentArtifact[i] = 1
+            --currentArtifact[i] = 1
 
             local Artifact = gm.variable_global_get("class_artifact")[currentArtifact[i]]
             local function DisplayCurrentArtifact()
