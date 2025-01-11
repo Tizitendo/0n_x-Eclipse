@@ -310,6 +310,7 @@ Callback.add("onGameStart", "OnyxEclipse7-onGameStart", function()
     end
 end)
 
+local test = true
 gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
     if currentEclipse ~= 0 then
         eclipses[currentEclipse]:set_allow_blight_spawns(true)
@@ -340,11 +341,18 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
         local PickableArtifacts = {1, 2, 3, 4, 5, 7, 9, 10, 11, 12, 13, 14}
         local level_subname_length = 0
         for i = 1, NumArtifacts do
-            local RandomArti = math.random(1, #PickableArtifacts)
-            currentArtifact[i] = PickableArtifacts[RandomArti]
-            table.remove(PickableArtifacts, RandomArti)
+            if currentArtifact[i] == 0 then
+                local RandomArti = math.random(1, #PickableArtifacts)
+                currentArtifact[i] = PickableArtifacts[RandomArti]
+                -- table.remove(PickableArtifacts, RandomArti)
+            end
+            for o = #PickableArtifacts, 1, -1 do
+                if PickableArtifacts[o] == currentArtifact[i] then
+                    table.remove(PickableArtifacts, o)
+                end
+            end
 
-            --currentArtifact[i] = 1
+            -- currentArtifact[i] = 1
 
             local Artifact = gm.variable_global_get("class_artifact")[currentArtifact[i]]
             local function DisplayCurrentArtifact()
@@ -493,22 +501,27 @@ Callback.add("onEliteInit", "OnyxArtifactCognant-onEliteInit", function(actor)
 end)
 
 -- Prestige
-gm.pre_script_hook(gm.constants.interactable_set_active, function(self, other, result, args)
+gm.post_script_hook(gm.constants.interactable_set_active, function(self, other, result, args)
     for i = 1, NumArtifacts do
         if currentArtifact[i] == 11 and self.object_index == gm.constants.oShrineMountainS then
-            if Director.mountain == 0 then
-                Director.mountain = 1
-            else
-                Director.mountain = Director.mountain * 2
+            local function DoubleMountains()
+                log.warning(Director.mountain)
+                Director.mountain = Director.mountain - 1
+                if Director.mountain == 0 then
+                    Director.mountain = 1
+                else
+                    Director.mountain = Director.mountain * 2
+                end
+                KeepArtifact[i] = true
             end
-            KeepArtifact[i] = true
+            Alarm.create(DoubleMountains, 1)
         end
 
         -- Honor
         if currentArtifact[i] == 1 and
             (self.object_index == gm.constants.oTeleporter or self.object_index == gm.constants.oTeleporterEpic or
                 self.object_index == gm.constants.oBlastdoorPanel) then
-                    self.maxtime = 1
+            self.maxtime = 1
         end
     end
 end)
