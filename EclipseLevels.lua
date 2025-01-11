@@ -230,9 +230,12 @@ Callback.add("onSecond", "OnyxEclipse3-onSecond", function(minute, second)
 end)
 
 gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
-    if FinishedTele and self.team == 2 then
-        self.exp_worth = 0
+    for i = 1, NumArtifacts do
+        if not FinishedTele or self.team ~= 2 or currentArtifact[i] == 1 then
+            return
+        end
     end
+    self.exp_worth = 0
 end)
 
 gm.pre_script_hook(gm.constants.interactable_set_active, function(self, other, result, args)
@@ -319,6 +322,7 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
     if currentEclipse >= 7 then
         for i = 1, NumArtifacts do
             if currentArtifact[i] ~= nil and currentArtifact[i] ~= 0 then
+                gm.variable_global_get("class_artifact")[currentArtifact[i]][9] = false
                 player[1]:item_remove(Item.find("ror", "glassStatHandler"))
                 player[1]:item_remove(Item.find("ror", "distortionStatHandler"))
                 player[1]:item_remove(spiritStatHandler)
@@ -327,13 +331,12 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
                 player[1]:remove_skill_override(1, 0)
                 player[1]:remove_skill_override(2, 0)
                 player[1]:remove_skill_override(3, 0)
-                local Artifact = gm.variable_global_get("class_artifact")[currentArtifact[i]]
-                Artifact[9] = false
-                ItemDropChance = DefaultSacrificeDropChance
-                if KeepArtifact[i] == nil or not KeepArtifact[i] then
-                    currentArtifact[i] = 0
-                    KeepArtifact[i] = false
-                end
+            end
+            ItemDropChance = DefaultSacrificeDropChance
+            log.warning(KeepArtifact[i])
+            if KeepArtifact[i] == nil or not KeepArtifact[i] then
+                currentArtifact[i] = 0
+                KeepArtifact[i] = false
             end
         end
 
