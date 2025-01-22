@@ -38,10 +38,6 @@ Initialize(function()
             PATH .. "GoldEclipse" .. i .. "_2x.png", 4, 20, 19))
     end
 
-    for i = 1, 14 do
-        Resources.sprite_load("Onyx", "Arti" .. i, PATH .. "arti" .. i .. ".png", 1, 0, 0)
-    end
-
     -- add difficulty that opens eclipse menu
     Eclipse = Difficulty.new("Onyx", "eclipse")
     if MaxEclipse <= 8 then
@@ -92,6 +88,7 @@ Initialize(function()
     -- check which eclipse difficulty is active, if any
     Callback.add("onGameStart", "OnyxEclipse-onGameStart", function()
         local function OpenEclipse()
+            local test = Artifact.find_all()
             if Eclipse:is_active() then
                 GM.run_destroy()
                 GM.variable_global_set("__gamemode_current", 1)

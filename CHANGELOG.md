@@ -1,3 +1,8 @@
+## 1.0.6
+* Made eclipse 1 slightly easier again
+* Eclipse 6 enemy damage reduced to +30%
+* Fixed eclipse 7 not working without specific dependency
+
 ## 1.0.5
 * Rebalanced some artifacts (see readme)
 * Slightly increased eclipse 2 difficulty

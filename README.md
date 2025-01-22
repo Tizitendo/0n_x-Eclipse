@@ -6,7 +6,7 @@
 3) Enemies Can Spawn After TP Event
 4) Enemy Speed: +25%
 5) Chest Prices: +60%
-6) Enemy Health/Damage: +40%
+6) Enemy Damage: +30%
 7) Every Stage, Activate a Random Artifact
 8) Allies receive permanent damage
 9) ???
