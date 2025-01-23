@@ -231,11 +231,10 @@ end)
 
 gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
     for i = 1, NumArtifacts do
-        if not FinishedTele or self.team ~= 2 or currentArtifact[i] == 1 then
-            return
+        if FinishedTele and self.team == 2 and currentArtifact[i] ~= 1 then
+            self.exp_worth = 0
         end
     end
-    self.exp_worth = 0
 end)
 
 gm.pre_script_hook(gm.constants.interactable_set_active, function(self, other, result, args)

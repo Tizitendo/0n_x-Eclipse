@@ -1,3 +1,6 @@
+## 1.0.7
+* fixed enemies not dropping any gold
+
 ## 1.0.6
 * Made eclipse 1 slightly easier again
 * Eclipse 6 enemy damage reduced to +30%

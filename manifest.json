@@ -1,6 +1,6 @@
 {
 	"name": "Eclipse",
-	"version_number": "1.0.6",
+	"version_number": "1.0.7",
 	"website_url": "https://github.com/Tizitendo/0n_x-Eclipse",
 	"description": "Adds the cut Eclipse difficulty back into the game",
 	"dependencies": [
