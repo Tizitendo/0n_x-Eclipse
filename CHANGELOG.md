@@ -1,5 +1,6 @@
 ## 1.0.8
 * Fixed some issues with prestige
+* swapped eclipse 6 and 7
 
 ## 1.0.7
 * fixed enemies not dropping any gold

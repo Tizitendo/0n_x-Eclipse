@@ -292,7 +292,7 @@ end)
 ---- eclipse 6 ----
 gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
     -- increase enemy damage
-    if currentEclipse >= 6 and self.team == 2.0 then
+    if currentEclipse >= 7 and self.team == 2.0 then
         self.damage_base = self.damage_base * EnemyStats
     end
 end)
@@ -330,7 +330,7 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
     table.remove(Artifacts, 8)
     table.remove(Artifacts, 6)
 
-    if currentEclipse >= 7 then
+    if currentEclipse >= 6 then
         NumArtifacts = math.floor(Director.stages_passed / 5 + 1)
         for i = 1, NumArtifacts do
             if currentArtifact[i] ~= nil and currentArtifact[i] ~= 0 then

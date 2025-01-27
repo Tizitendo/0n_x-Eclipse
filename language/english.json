@@ -27,19 +27,19 @@
         },
         "eclipse6": {
             "name": "Eclipse (6)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>\n( 6 )  Enemy Damage: <r>+30%</c>"
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>\n( 6 )  Every Stage, <r>Activate a Random Artifact</c>"
         },
         "eclipse7": {
             "name": "Eclipse (7)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>\n( 6 )  Enemy Damage: <r>+30%</c>\n( 7 )  Every Stage, <r>Activate a Random Artifact</c>"
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>\n( 6 )  Every Stage, <r>Activate a Random Artifact</c>\n( 7 )  Enemy Damage: <r>+30%</c>"
         },
         "eclipse8": {
             "name": "Eclipse (8)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>\n( 6 )  Enemy Damage: <r>+30%</c>\n( 7 )  Every Stage, <r>Activate a Random Artifact</c>\n( 8 )  Allies receive <r>permanent damage</c>"
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>\n( 6 )  Every Stage, <r>Activate a Random Artifact</c>\n( 7 )  Enemy Damage: <r>+30%</c>\n( 8 )  Allies receive <r>permanent damage</c>"
         },
         "eclipse9": {
             "name": "<#b53f80>Eclipse (9)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>\n( 6 )  Enemy Damage: <r>+30%</c>\n( 7 )  Every Stage, <r>Activate a Random Artifact</c>\n( 8 )  Allies receive <r>permanent damage</c>\n<#b53f80>( 9 )  Includes All Typhoon Modifiers</c>"
+            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+60%</c>\n( 6 )  Every Stage, <r>Activate a Random Artifact</c>\n( 7 )  Enemy Damage: <r>+30%</c>\n( 8 )  Allies receive <r>permanent damage</c>\n<#b53f80>( 9 )  Includes All SSR Typhoon Modifiers</c>"
         }
     }
 }
