@@ -7,7 +7,7 @@
 4) Enemy Speed: +25%
 5) Chest Prices: +60%
 6) Enemy Damage: +30%
-7) Every Stage, Activate a Random Artifact
+7) Every Stage, Activate a Random Artifact (Get +1 Artifact every 5 stages)
 8) Allies receive permanent damage
 9) ???
 

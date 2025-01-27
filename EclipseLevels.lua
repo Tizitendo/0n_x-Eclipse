@@ -348,7 +348,7 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
             if not KeepArtifact[i] then
                 currentArtifact[i] = 0
             else
-                for o = 1, #Artifacts do
+                for o = #Artifacts, 1, -1 do
                     if Artifacts[o] == currentArtifact[i] then
                         table.remove(Artifacts, o)
                     end
