@@ -345,10 +345,16 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
                 player[1]:remove_skill_override(3, 0)
             end
             ItemDropChance = DefaultSacrificeDropChance
-            if KeepArtifact[i] == nil or not KeepArtifact[i] then
+            if not KeepArtifact[i] then
                 currentArtifact[i] = 0
-                KeepArtifact[i] = false
+            else
+                for o = 1, #Artifacts do
+                    if Artifacts[o] == currentArtifact[i] then
+                        table.remove(Artifacts, o)
+                    end
+                end
             end
+            KeepArtifact[i] = false
         end
 
         -- Honor, Kin, Distortion, Spite, Glass, Sacrifice, Spirit, Origin, Prestige, Dissonance, Tempus, Cognation
