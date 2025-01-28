@@ -12,7 +12,7 @@
 9) ???
 
 Artifacts (all artifact changes only apply in eclipse):
-- Modded artifacts can be added to the spawnpool by just activating them (might break for some artifacts)
+- Modded artifacts can be added to the artifact pool by just activating them (might break for some modded artifacts)
 - Honor: Enemies drop 100% more gold and xp, can't spawn bligtheds, Teleporter can be activated without killing the boss
 - Sacrifice: Item drop rate lowered with every item dropped this stage
 - command, enigma: can't activate during eclipse

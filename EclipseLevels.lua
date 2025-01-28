@@ -253,7 +253,7 @@ end)
 
 gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
     for i = 1, NumArtifacts do
-        if FinishedTele and self.team == 2 and currentArtifact[i] ~= 1 then
+        if FinishedTele and self.team == 2 and currentArtifact[i].identifier ~= "honor" then
             self.exp_worth = 0
         end
     end
@@ -392,7 +392,7 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
                 end
             end
 
-            -- currentArtifact[i] = Artifact.find("ror", honor)
+            --currentArtifact[i] = Artifact.find("ror", "honor")
 
             local function DisplayCurrentArtifact()
                 if i == 1 then
