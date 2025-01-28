@@ -16,6 +16,7 @@ local FinishedTele = false
 local EndFight = false
 local NumArtifacts = 0
 local currentArtifact = {}
+local BaseArtifacts = {}
 local Interactables = {gm.constants.oChest1, gm.constants.oChest2, gm.constants.oChest5, gm.constants.oChestHealing1,
                        gm.constants.oChestDamage1, gm.constants.oChestUtility1, gm.constants.oChestHealing2,
                        gm.constants.oChestDamage2, gm.constants.oChestUtility2, gm.constants.oGunchest,
@@ -47,6 +48,27 @@ Callback.add("onGameStart", "OnyxEclipseGen-onGameStart", function()
     for i = 1, 9 do
         if eclipses[i]:is_active() then
             currentEclipse = i
+        end
+    end
+
+    --Get Artifacts, including modded and check if activated
+    if currentEclipse == 0 then
+        BaseArtifacts = Artifact.find_all()
+
+        for i = 1, #BaseArtifacts do
+            if BaseArtifacts[i].identifier == 0 then
+                --cognation seems to be in a weird place in the list, so it's added to the end
+                BaseArtifacts[i] = Artifact.find("ror", "cognation")
+                BaseArtifacts = {table.unpack(BaseArtifacts, 1, i)}
+                break
+            end
+        end
+
+        for i = #BaseArtifacts, 1, -1 do
+            if (BaseArtifacts[i].namespace ~= "ror" or BaseArtifacts[i].identifier == "enigma" or
+                BaseArtifacts[i].identifier == "command") and not gm.bool(BaseArtifacts[i].active) then
+                table.remove(BaseArtifacts, i)
+            end
         end
     end
 end)
@@ -307,31 +329,32 @@ spiritStatHandler:toggle_loot(false)
 local Load = {table.unpack(Artifact.find_all(), 1, 13)}
 Load[14] = Artifact.find("ror", "cognation")
 for i = 1, 14 do
-    Resources.sprite_load("Onyx", Load[i].identifier, PATH .. "\\Assets\\"..Load[i].identifier .. ".png", 1, 0, 0)
+    Resources.sprite_load("Onyx", Load[i].identifier, PATH .. "\\Assets\\" .. Load[i].identifier .. ".png", 1, 0, 0)
 end
 
+local Artifacts = {}
 Callback.add("onGameStart", "OnyxEclipse7-onGameStart", function()
     ItemDropChance = DefaultSacrificeDropChance
     for i = 1, #currentArtifact do
         currentArtifact[i] = 0
         KeepArtifact[i] = false
         NumArtifacts = 0
+        Artifacts = {}
     end
 end)
-
-local Artifacts = {}
 
 gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
     if currentEclipse ~= 0 then
         eclipses[currentEclipse]:set_allow_blight_spawns(true)
     end
-    local Artifacts = {table.unpack(Artifact.find_all(), 1, 13)}
-    Artifacts[14] = Artifact.find("ror", "cognation")
-    table.remove(Artifacts, 8)
-    table.remove(Artifacts, 6)
 
     if currentEclipse >= 6 then
         NumArtifacts = math.floor(Director.stages_passed / 5 + 1)
+        if #Artifacts < NumArtifacts then
+            for i = 1, #BaseArtifacts do
+                table.insert(Artifacts, BaseArtifacts[i])
+            end
+        end
         for i = 1, NumArtifacts do
             if currentArtifact[i] ~= nil and currentArtifact[i] ~= 0 then
                 currentArtifact[i].active = false
@@ -392,7 +415,8 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
             end
             Alarm.create(DisplayCurrentArtifact, 1)
             if currentArtifact[i].identifier ~= "distortion" and currentArtifact[i].identifier ~= "spirit" and
-                currentArtifact[i].identifier ~= "glass" and currentArtifact[i].identifier ~= "sacrifice" and currentArtifact[i].identifier ~= "origin" then
+                currentArtifact[i].identifier ~= "glass" and currentArtifact[i].identifier ~= "sacrifice" and
+                currentArtifact[i].identifier ~= "origin" then
                 currentArtifact[i].active = true
             end
             if currentArtifact[i].identifier == "distortion" then
@@ -463,8 +487,9 @@ end)
 -- Sacrifice
 Callback.add(Callback.TYPE.onKillProc, "OnyxArtifactSacrifice-onKillProc", function(victim, killer)
     for i = 1, NumArtifacts do
-        if currentArtifact[i].identifier == "sacrifice" and not FinishedTele and math.random(1, ItemDropChance) == ItemDropChance then
-            if math.random(1, 100) == 100 then
+        if currentArtifact[i].identifier == "sacrifice" and not FinishedTele and math.random(1, ItemDropChance) ==
+            ItemDropChance then
+            if math.random(1, 50) == 50 then
                 Item.get_random(2):create(victim.x, victim.y)
             elseif math.random(1, 4) == 4 then
                 Item.get_random(1):create(victim.x, victim.y)
@@ -473,7 +498,7 @@ Callback.add(Callback.TYPE.onKillProc, "OnyxArtifactSacrifice-onKillProc", funct
             else
                 Item.get_random(0):create(victim.x, victim.y)
             end
-            ItemDropChance = ItemDropChance + 5
+            ItemDropChance = ItemDropChance + 3
         end
     end
 end)
@@ -522,13 +547,15 @@ gm.post_script_hook(gm.constants.interactable_set_active, function(self, other, 
     for i = 1, NumArtifacts do
         if currentArtifact[i].identifier == "mountain" and self.object_index == gm.constants.oShrineMountainS then
             local function DoubleMountains()
-                Director.mountain = Director.mountain - 1
-                if Director.mountain == 0 then
-                    Director.mountain = 1
-                else
-                    Director.mountain = Director.mountain * 2
+                if Director.teleporter_active == 0 then
+                    Director.mountain = Director.mountain - 1
+                    if Director.mountain <= 0 then
+                        Director.mountain = 1
+                    else
+                        Director.mountain = Director.mountain * 2
+                    end
+                    KeepArtifact[i] = true
                 end
-                KeepArtifact[i] = true
             end
             Alarm.create(DoubleMountains, 1)
         end

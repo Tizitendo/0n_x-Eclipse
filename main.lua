@@ -1,5 +1,5 @@
 log.info("Successfully loaded " .. _ENV["!guid"] .. ".")
-mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
+mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto()
 local PATH = _ENV["!plugins_mod_folder_path"] .. "/Assets/"
 mods.on_all_mods_loaded(function()
     for k, v in pairs(mods) do

@@ -1,3 +1,10 @@
+## 1.1.0
+* Eclipse 6 now works with modded artifacts. Unlike base game artifacts, these need to be enabled to get added to the artifact pool (may break for some artifacts)
+* This also works for adding enigma and command back to the spawnpool
+* Prestige changes now only apply before activating the teleporter
+* You now can't get the same artifact again before getting every other artifact
+* Increased sacrifice drop chance
+
 ## 1.0.8
 * Fixed some issues with prestige
 * swapped eclipse 6 and 7

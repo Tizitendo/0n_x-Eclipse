@@ -1,11 +1,11 @@
 {
 	"name": "Eclipse",
-	"version_number": "1.0.8",
+	"version_number": "1.1.0",
 	"website_url": "https://github.com/Tizitendo/0n_x-Eclipse",
 	"description": "Adds the cut Eclipse difficulty back into the game",
 	"dependencies": [
-		"ReturnOfModding-ReturnOfModding-1.0.56",
-		"RoRRModdingToolkit-RoRR_Modding_Toolkit-1.2.8",
+		"ReturnOfModding-ReturnOfModding-1.0.58",
+		"RoRRModdingToolkit-RoRR_Modding_Toolkit-1.2.13",
 		"SmoothSpatula-TomlHelper-1.0.1",
 		"Klehrik-CurseHelper-1.0.1"
 	]
