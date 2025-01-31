@@ -85,6 +85,7 @@ Initialize(function()
         end
     end)
 
+    local FirstOpen = true
     -- check which eclipse difficulty is active, if any
     Callback.add("onGameStart", "OnyxEclipse-onGameStart", function()
         local function OpenEclipse()
@@ -100,6 +101,12 @@ Initialize(function()
     end)
     require("EclipseLevels")
 end)
+
+Initialize(function()
+    Artifact.new("OnyxEclipse", "LastArtifact")
+    local e = List.wrap(Global.artifact_display_list)
+    e:delete(#e - 1)
+end, true)
 
 -- Add ImGui window
 gui.add_to_menu_bar(function()

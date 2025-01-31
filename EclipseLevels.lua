@@ -51,15 +51,14 @@ Callback.add("onGameStart", "OnyxEclipseGen-onGameStart", function()
         end
     end
 
-    --Get Artifacts, including modded and check if activated
+    -- Get Artifacts, including modded and check if activated
     if currentEclipse == 0 then
         BaseArtifacts = Artifact.find_all()
-
         for i = 1, #BaseArtifacts do
-            if BaseArtifacts[i].identifier == 0 then
-                --cognation seems to be in a weird place in the list, so it's added to the end
-                BaseArtifacts[i] = Artifact.find("ror", "cognation")
-                BaseArtifacts = {table.unpack(BaseArtifacts, 1, i)}
+            if BaseArtifacts[i].identifier == "LastArtifact" then
+                -- cognation seems to be in a weird place in the list, so it's added to the end
+                BaseArtifacts[i + 1] = Artifact.find("ror", "cognation")
+                BaseArtifacts = {table.unpack(BaseArtifacts, 1, i + 1)}
                 break
             end
         end
@@ -349,7 +348,8 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
     end
 
     if currentEclipse >= 6 then
-        NumArtifacts = math.floor(Director.stages_passed / 5 + 1)
+        NumArtifacts = math.min(math.floor((Director.stages_passed + 1) / 5 + 1), 3)
+        log.warning(Director.stages_passed)
         if #Artifacts < NumArtifacts then
             for i = 1, #BaseArtifacts do
                 table.insert(Artifacts, BaseArtifacts[i])
@@ -392,7 +392,7 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
                 end
             end
 
-            --currentArtifact[i] = Artifact.find("ror", "honor")
+            -- currentArtifact[i] = Artifact.find("ror", "honor")
 
             local function DisplayCurrentArtifact()
                 if i == 1 then

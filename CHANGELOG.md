@@ -1,3 +1,8 @@
+## 1.1.1
+* Fixed error that would occur when not having an artifact mod installed
+* Amount of Artifacts now increases every 5 stages instead of every 6
+* Amount of Active Artifacts in e6 capped to 3
+
 ## 1.1.0
 * Eclipse 6 now works with modded artifacts. Unlike base game artifacts, these need to be enabled to get added to the artifact pool (may break for some artifacts)
 * This also works for adding enigma and command back to the artifact pool
