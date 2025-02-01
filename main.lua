@@ -8,15 +8,17 @@ mods.on_all_mods_loaded(function()
         end
     end
     params = {
-        Enabled = {true, true, true, true, true, true, true, true, true}
+        ShowArtifacts = true
     }
     params = Toml.config_update(_ENV["!guid"], params) -- Load Save
 end)
 
 local Eclipse = nil
 local eclipses = {}
+local EclipseArtifacts = {}
 
 Initialize(function()
+    local ArtifactDisplay = List.wrap(Global.artifact_display_list)
     Difficulty.new("ror", "eclipse9")
 
     -- find eclipse difficulties
@@ -24,6 +26,28 @@ Initialize(function()
         eclipses[i] = Difficulty.find("ror", "eclipse" .. tostring(i))
         eclipses[i]:set_sound(Resources.sfx_load("Onyx", "EclipseSfx", PATH .. "eclipse.ogg"))
     end
+    -- add secret eclipse 9
+    eclipses[9]:set_scaling(0.2, 4.0, 1.7)
+    eclipses[9]:set_monsoon_or_higher(true)
+    eclipses[9]:set_allow_blight_spawns(true)
+    eclipses[9]:set_sprite(Resources.sprite_load("Onyx", "Eclipse9", PATH .. "Eclipse9.png", 2, 13, 13),
+        Resources.sprite_load("Onyx", "Eclipse9_2x", PATH .. "Eclipse9_2x.png", 6, 20, 19))
+    local EclipseDisplay = List.wrap(GM.variable_global_get("difficulty_display_list_eclipse"))
+    
+    if Mod.find("Robomandoslab-StarstormReturns") ~= nil then
+        --clipseDisplay:add(Wrap.wrap(eclipses[9]))
+    end
+
+    for i = 1, 8 do
+        EclipseArtifacts[i] = Artifact.new("OnyxEclipse", "eclipse"..i)
+        EclipseArtifacts[i]:set_sprites(Resources.sprite_load("Onyx", "ArtiEclipse"..i, PATH .. "ArtiEclipse"..i..".png", 1, 10, 10), 1)
+    end
+    ArtifactDisplay:delete(#ArtifactDisplay-1)
+
+    gm.post_script_hook(gm.constants.difficulty_eclipse_get_max_available_level_for_survivor, function(self, other, result, args)
+        --result.value = 999
+        --Helper.log_hook(self, other, result, args)
+    end)
 
     -- get the max eclipse level of all survivors for gold eclipse
     local MaxEclipse = 9
@@ -31,6 +55,7 @@ Initialize(function()
         if gm.difficulty_eclipse_get_max_available_level_for_survivor(i) < MaxEclipse then
             MaxEclipse = GM.difficulty_eclipse_get_max_available_level_for_survivor(i)
         end
+        GM.difficulty_eclipse_get_max_available_level_for_survivor(i, 1)
     end
     for i = 1, MaxEclipse - 1 do
         eclipses[i]:set_sprite(Resources.sprite_load("Onyx", "GoldEclipse" .. i, PATH .. "GoldEclipse" .. i .. ".png",
@@ -54,15 +79,6 @@ Initialize(function()
     Eclipse:set_primary_color(Color(0x62a8e5))
     Eclipse:set_sound(Resources.sfx_load("Onyx", "EclipseSfx", PATH .. "eclipse.ogg"))
 
-    -- add secret eclipse 9
-    eclipses[9]:set_scaling(0.2, 4.0, 1.7)
-    eclipses[9]:set_monsoon_or_higher(true)
-    eclipses[9]:set_allow_blight_spawns(true)
-    eclipses[9]:set_sprite(Resources.sprite_load("Onyx", "Eclipse9", PATH .. "Eclipse9.png", 2, 13, 13),
-        Resources.sprite_load("Onyx", "Eclipse9_2x", PATH .. "Eclipse9_2x.png", 6, 20, 19))
-    local EclipseDisplay = List.wrap(GM.variable_global_get("difficulty_display_list_eclipse"))
-    EclipseDisplay:add(Wrap.wrap(eclipses[9]))
-
     gm.pre_script_hook(gm.constants.game_lobby_start, function(self, other, result, args)
         local DifficultyDisplay = List.wrap(GM.variable_global_get("difficulty_display_list"))
 
@@ -74,22 +90,30 @@ Initialize(function()
             end
         end
 
-        if self and self.class_ind == nil then
-            for i = 1, 9 do
-                if params.Enabled[i] then
-                    DifficultyDisplay:add(2 + i)
+        for i = #ArtifactDisplay, 1, -1 do
+            for o = 1, 9 do
+                if ArtifactDisplay[i] == Wrap.wrap(EclipseArtifacts[o]) then
+                    ArtifactDisplay:delete(i-1)
                 end
             end
+        end
+
+        if (self and self.class_ind == nil) or params.ShowArtifacts then
+            for i = 1, 8 do
+                ArtifactDisplay:add(Wrap.wrap(EclipseArtifacts[i]))
+            end
+        end
+
+        if self and self.class_ind == nil then
+            
         else
             DifficultyDisplay:add(Wrap.wrap(Eclipse))
         end
     end)
 
-    local FirstOpen = true
     -- check which eclipse difficulty is active, if any
     Callback.add("onGameStart", "OnyxEclipse-onGameStart", function()
         local function OpenEclipse()
-            local test = Artifact.find_all()
             if Eclipse:is_active() then
                 GM.run_destroy()
                 GM.variable_global_set("__gamemode_current", 1)
@@ -99,27 +123,18 @@ Initialize(function()
         end
         Alarm.create(OpenEclipse, 1)
     end)
+    
     require("EclipseLevels")
 end)
 
-Initialize(function()
-    Artifact.new("OnyxEclipse", "LastArtifact")
-    local e = List.wrap(Global.artifact_display_list)
-    e:delete(#e - 1)
-end, true)
-
 -- Add ImGui window
 gui.add_to_menu_bar(function()
-    for i = 1, 9 do
-        params.Enabled[i] = ImGui.Checkbox("Eclipse " .. i .. " Enabled", params.Enabled[i])
-    end
+    params.ShowArtifacts = ImGui.Checkbox("Show Artifacts", params.ShowArtifacts)
     Toml.save_cfg(_ENV["!guid"], params)
 end)
 gui.add_imgui(function()
     if ImGui.Begin("Eclipse") then
-        for i = 1, 9 do
-            params.Enabled[i] = ImGui.Checkbox("Eclipse " .. i .. " Enabled", params.Enabled[i])
-        end
+        params.ShowArtifacts = ImGui.Checkbox("Show Artifacts", params.ShowArtifacts)
         Toml.save_cfg(_ENV["!guid"], params)
     end
     ImGui.End()

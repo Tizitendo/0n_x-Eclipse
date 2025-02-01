@@ -1,3 +1,9 @@
+## 1.1.2
+* Fixed more errors when you had too many artifact mods installed
+* Each eclipse modifier can now be turned on individually with artifacts
+* You can hide eclipse artifacts with the imgui window
+* removed eclipse 9, since it cannot be unlocked
+
 ## 1.1.1
 * Fixed error that would occur when not having an artifact mod installed
 * Amount of Artifacts now increases every 5 stages instead of every 6

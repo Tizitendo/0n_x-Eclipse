@@ -1,6 +1,7 @@
 # Onyx-Eclipse
 
 - Adds the cut Eclipse gamemode back into the game
+- Each eclipse modifier can also be turned on individually via artifacts
 1) StageStart, Director Credits: +500%
 2) Teleporter Gains Radius
 3) Enemies Can Spawn After TP Event
