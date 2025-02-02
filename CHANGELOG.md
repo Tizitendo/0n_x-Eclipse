@@ -1,3 +1,7 @@
+## 1.1.3
+* Added eclipse 9 back into the game, now working (requires starstorm installed)
+* Artifact textures and descriptions
+
 ## 1.1.2
 * Fixed more errors when you had too many artifact mods installed
 * Each eclipse modifier can now be turned on individually with artifacts

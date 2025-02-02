@@ -1,6 +1,6 @@
 log.info("Successfully loaded " .. _ENV["!guid"] .. ".")
 mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto()
-local PATH = _ENV["!plugins_mod_folder_path"] .. "/Assets/"
+PATH = _ENV["!plugins_mod_folder_path"] .. "/Assets/"
 mods.on_all_mods_loaded(function()
     for k, v in pairs(mods) do
         if type(v) == "table" and v.tomlfuncs then
@@ -8,7 +8,8 @@ mods.on_all_mods_loaded(function()
         end
     end
     params = {
-        ShowArtifacts = true
+        ShowArtifacts = true,
+        Unlocked9 = {}
     }
     params = Toml.config_update(_ENV["!guid"], params) -- Load Save
 end)
@@ -35,18 +36,36 @@ Initialize(function()
     local EclipseDisplay = List.wrap(GM.variable_global_get("difficulty_display_list_eclipse"))
     
     if Mod.find("Robomandoslab-StarstormReturns") ~= nil then
-        --clipseDisplay:add(Wrap.wrap(eclipses[9]))
+        EclipseDisplay:add(Wrap.wrap(eclipses[9]))
     end
 
-    for i = 1, 8 do
+    for i = 1, 9 do
         EclipseArtifacts[i] = Artifact.new("OnyxEclipse", "eclipse"..i)
-        EclipseArtifacts[i]:set_sprites(Resources.sprite_load("Onyx", "ArtiEclipse"..i, PATH .. "ArtiEclipse"..i..".png", 1, 10, 10), 1)
+        EclipseArtifacts[i]:set_sprites(Resources.sprite_load("Onyx", "ArtiEclipse"..i, PATH .. "ArtiEclipse"..i..".png", 3, 11, 12), 1)
     end
     ArtifactDisplay:delete(#ArtifactDisplay-1)
 
     gm.post_script_hook(gm.constants.difficulty_eclipse_get_max_available_level_for_survivor, function(self, other, result, args)
         --result.value = 999
-        --Helper.log_hook(self, other, result, args)
+        local Survivors = Global.class_survivor
+        if params.Unlocked9[Survivors[args[1].value + 1][1].."-"..Survivors[args[1].value + 1][2]] then
+            result.value = 9
+        end
+    end)
+
+    -- check if e8 was beaten
+    Callback_Raw.add(Callback.TYPE.onGameEnd, "OnyxEclipse-onGameEnd", function(self, other, result, args)
+        if self ~= nil and self.object_index == gm.constants.oCommandFinal and eclipses[8]:is_active() then
+            local Survivors = Global.class_survivor
+            params.Unlocked9[Survivors[GM._mod_player_get_survivor(Player.get_client()) + 1][1].."-"..Survivors[GM._mod_player_get_survivor(Player.get_client()) + 1][2]] = true
+            Toml.save_cfg(_ENV["!guid"], params)
+        end
+    end)
+
+    -- make eclipse 9 unlockable
+    memory.dynamic_hook_mid("max_diff_level_fix", {"rdi"}, {"RValue*"}, 0,
+    gm.get_script_function_address(106251):add(475), function(args)
+        args[1].value = 9.0
     end)
 
     -- get the max eclipse level of all survivors for gold eclipse

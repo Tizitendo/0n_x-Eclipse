@@ -10,7 +10,7 @@
 6) Every Stage, Activate a Random Artifact (Get +1 Artifact every 5 stages)
 7) Enemy Damage: +30%
 8) Allies receive permanent damage
-9) ???
+9) ??? (requires starstorm)
 
 Artifacts (all artifact changes only apply in eclipse):
 - Modded artifacts can be added to the artifact pool by just activating them (might break for some modded artifacts)

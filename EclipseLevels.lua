@@ -1,4 +1,3 @@
-local PATH = _ENV["!plugins_mod_folder_path"]
 Curse = mods["Klehrik-CurseHelper"].setup()
 
 local ExtraCreditsEnabled = 0
@@ -46,12 +45,6 @@ for k, v in ipairs(Global.class_artifact) do
 end
 
 Callback.add("onGameStart", "OnyxEclipseGen-onGameStart", function()
-    for i = 0, #Class.SURVIVOR - 1 do
-        --log.warning(GM.difficulty_eclipse_get_max_available_level_for_survivor(i))
-
-    end
-
-
     ExtraCreditsEnabled = 0
     player = {}
     Director = GM._mod_game_getDirector()
@@ -71,10 +64,6 @@ Callback.add("onGameStart", "OnyxEclipseGen-onGameStart", function()
         if ActiveEclipse then
             EclipseArtifacts[i][9] = true
         end
-    end
-
-    if eclipses[9]:is_active() then
-        GM._mod_game_setDifficulty(Difficulty.find("ssr", "typhoon"))
     end
 
     -- Get Artifacts, including modded and check if activated
@@ -351,7 +340,7 @@ spiritStatHandler:toggle_loot(false)
 local Load = {table.unpack(Artifact.find_all(), 1, 13)}
 Load[14] = Artifact.find("ror", "cognation")
 for i = 1, 14 do
-    Resources.sprite_load("Onyx", Load[i].identifier, PATH .. "\\Assets\\" .. Load[i].identifier .. ".png", 1, 0, 0)
+    Resources.sprite_load("Onyx", Load[i].identifier, PATH ..Load[i].identifier .. ".png", 1, 0, 0)
 end
 
 local Artifacts = {}
@@ -625,4 +614,24 @@ gm.post_script_hook(gm.constants.actor_proc_on_damage, function(self, other, res
         Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.01 * 40 * args[1].value.damage_true / self.maxhp)
         CurseIndex = CurseIndex + 1
     end
+end)
+
+
+---- eclipse 9 ----
+local ImgEclipse9 = Resources.sprite_load("Onyx", "Eclipse9", PATH .. "Eclipse9.png", 2, 13, 13)
+local ImgOriginalTyphoon = Resources.sprite_load("Onyx", "Eclipse9Typhoon", PATH .. "DifficultyTyphoon.png", 5, 13, 13)
+local ImgEclipse9_2x = Resources.sprite_load("Onyx", "Eclipse9Typhoon_2x", PATH .. "DifficultyTyphoon_2x.png", 4, 20, 19)
+Callback.add(Callback.TYPE.onGameStart, "OnyxEclipse9-onGameStart", function()
+    if gm.bool(EclipseArtifacts[9][9]) then
+        local Eclipse9 = Difficulty.find("ssr", "typhoon")
+        GM._mod_game_setDifficulty(Eclipse9)
+        Eclipse9:set_sprite(ImgEclipse9, ImgEclipse9_2x)
+        -- Eclipse9:set_sprite(Resources.sprite_load("Onyx", "Eclipse9Typhoon", PATH .. "DifficultyTyphoon.png", 5, 13, 13),
+        -- Resources.sprite_load("Onyx", "Eclipse9Typhoon_2x", PATH .. "DifficultyTyphoon_2x.png", 4, 20, 19))
+    end
+end)
+
+Callback.add(Callback.TYPE.onGameEnd, "OnyxEclipse9-onGameEnd", function()
+    local Eclipse9 = Difficulty.find("ssr", "typhoon")
+    Eclipse9:set_sprite(ImgOriginalTyphoon, ImgEclipse9_2x)
 end)
