@@ -394,7 +394,7 @@ local function EmptyChest()
     local Chests = Instance.find_all(Instance.chests)
     while ChestRemoveCount > 0 and #Chests > 0 do
         local RandomChest = math.random(1, #Chests)
-        if Chests[RandomChest].active == 0 then
+        if Chests[RandomChest].active <= 0 then
             Chests[RandomChest].active = 1
             Chests[RandomChest].open_delay = 0
             ChestRemoveCount = ChestRemoveCount - 1
@@ -408,6 +408,11 @@ Callback.add("onStageStart", "OnyxAltEclipse5-onStageStart", function()
     end
 end)
 Callback.add("onMinute", "OnyxAltEclipse5-onMinute", function(minute, second)
+    for i = 1, NumArtifacts do
+        if currentArtifact[i][2] == "sacrifice" then
+            return;
+        end
+    end
     if gm.bool(AltEclipseArtifacts[5][9]) and minute % 2 == 0 then
         ChestRemoveCount = ChestRemoveCount + 1
         if gm.bool(AltEclipseArtifacts[6][9]) and math.random(1, 4) == 5 then
