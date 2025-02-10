@@ -867,5 +867,7 @@ end)
 
 Callback.add(Callback.TYPE.onGameEnd, "OnyxEclipse9-onGameEnd", function()
     local Eclipse9 = Difficulty.find("ssr", "typhoon")
-    Eclipse9:set_sprite(ImgOriginalTyphoon, ImgEclipse9_2x)
+    if Eclipse9 then
+        Eclipse9:set_sprite(ImgOriginalTyphoon, ImgEclipse9_2x)
+    end
 end)
