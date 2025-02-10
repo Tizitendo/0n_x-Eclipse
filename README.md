@@ -20,12 +20,14 @@ Added alternative Eclipse Levels
 
 Artifacts (all artifact changes only apply in eclipse):
 - Modded artifacts can be added to the artifact pool by just activating them (might break for some modded artifacts)
+
 - Honor: Enemies drop 100% more gold and xp, can't spawn bligtheds, Teleporter can be activated without killing the boss
 - Sacrifice: Item drop rate lowered with every item dropped this stage
 - command, enigma: can't activate during eclipse
-- Cognation: Reduced cognant hp and damage by 50%
-- Prestige: Activating one shrine of the mountain forces Prestige active next stage. Prestige mountains increase exponentially (1, 2, 4, 8)
-- Origin: Imps invade every 5 minutes. Invasion Difficulty increases every 5 minutes
+- Cognation: Reduced cognant hp and damage by 50%, increased stage credits by 30%
+- Prestige: Activating one shrine of the mountain forces Prestige active next stage. Prestige mountains increase exponentially (2, 4, 8, 16)
+- Origin: Imps invade every 5 minutes. Number of Imp Vanguards increases every 10 minutes, Vanguard damage increases with time
+- Tempus: Get 5 items on pickup instead of 3
 
 ## Special Thanks To
 * The Return Of Modding Discord, Especially @Kris, @Klehrik and @syntaxevasion

@@ -81,7 +81,8 @@ Callback.add("onGameStart", "OnyxEclipseGen-onGameStart", function()
 
         for i = #BaseArtifacts, 1, -1 do
             if (BaseArtifacts[i][1] ~= "ror" or BaseArtifacts[i][2] == "enigma" or BaseArtifacts[i][2] == "command") and
-                (not gm.bool(BaseArtifacts[i][9]) or BaseArtifacts[i][1] == "OnyxEclipse" or BaseArtifacts[i][1] == "OnyxAltEclipse") then
+                (not gm.bool(BaseArtifacts[i][9]) or BaseArtifacts[i][1] == "OnyxEclipse" or BaseArtifacts[i][1] ==
+                    "OnyxAltEclipse") then
                 table.remove(BaseArtifacts, i)
             end
         end
@@ -133,8 +134,8 @@ Callback.add("onStageStart", "OnyxEclipse1-onStageStart", function()
     end
 end)
 gm.post_script_hook(gm.constants.instance_create_depth, function(self, other, result, args)
-    if gm.bool(AltEclipseArtifacts[1][9]) and result.value ~= nil and result.value.hp ~= nil and result.value.team == 1 and result.value.object_index ~=
-        gm.constants.oP then
+    if gm.bool(AltEclipseArtifacts[1][9]) and result.value ~= nil and result.value.hp ~= nil and result.value.team == 1 and
+        result.value.object_index ~= gm.constants.oP then
         if gm.bool(AltEclipseArtifacts[6][9]) then
             result.value.hp = result.value.hp * 0.35
         else
@@ -653,6 +654,15 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
                     eclipses[i]:set_allow_blight_spawns(false)
                 end
             end
+
+            if currentArtifact[i][2] == "cognation" then
+                local Stage = Stage.wrap(args[1].value)
+                Stage.interactable_spawn_points = Stage.interactable_spawn_points * 1.3
+                local function RevertStageCredits(Stage)
+                    Stage.interactable_spawn_points = Stage.interactable_spawn_points / 1.3
+                end
+                Alarm.create(RevertStageCredits, 1, Stage)
+            end
         end
     end
 end)
@@ -776,13 +786,29 @@ gm.post_script_hook(gm.constants.interactable_set_active, function(self, other, 
 end)
 
 -- Origin
+local timeMinute = 0
 Callback.add("onMinute", "OnyxArtifactOrigin-onMinute", function(minute, second)
+    timeMinute = minute
     for i = 1, NumArtifacts do
         if currentArtifact[i][2] == "origin" and minute % 5 == 0 then
             local Invasion = Object.find("ror", "ImpPortal")
-            for i = 1, minute / 5 do
+            for i = 1, 1 + minute / 10 do
                 Invasion:create(player[1].x, player[1].y)
             end
+        end
+    end
+end)
+gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
+    if self ~= nil and self.object_index == gm.constants.oImpGS then
+        self.damage_base = self.damage_base * (1 + timeMinute / 10)
+    end
+end)
+
+-- Tempus
+gm.post_script_hook(gm.constants.item_give, function(self, other, result, args)
+    for i = 1, NumArtifacts do
+        if currentArtifact[i][2] == "temporary" and args[3].value == 3 then
+            gm.item_give_internal(args[1].value, args[2].value, 2, args[4].value)
         end
     end
 end)
@@ -805,10 +831,12 @@ end)
 gm.post_script_hook(gm.constants.actor_proc_on_damage, function(self, other, result, args)
     if gm.bool(EclipseArtifacts[8][9]) and self.team == 1 then
         if gm.bool(EclipseArtifacts[7][9]) then
-            Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.8 * 0.4 * args[1].value.damage_true / self.maxhp)
+            Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex,
+                0.8 * 0.4 * args[1].value.damage_true / self.maxhp)
             CurseIndex = CurseIndex + 1
             if gm.bool(AltEclipseArtifacts[6][9]) then
-                Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.8 * 0.1 * args[1].value.damage_true / self.maxhp)
+                Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex,
+                    0.8 * 0.1 * args[1].value.damage_true / self.maxhp)
                 CurseIndex = CurseIndex + 1
             end
         else
