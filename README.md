@@ -24,7 +24,7 @@ Artifacts (all artifact changes only apply in eclipse):
 - Honor: Enemies drop 100% more gold and xp, can't spawn bligtheds, Teleporter can be activated without killing the boss
 - Sacrifice: Item drop rate lowered with every item dropped this stage
 - command, enigma: can't activate during eclipse
-- Cognation: Reduced cognant hp and damage by 50%, increased stage credits by 30%
+- Cognation: Reduced cognant hp and damage by 50%, increased stage credits by 20%
 - Prestige: Activating one shrine of the mountain forces Prestige active next stage. Prestige mountains increase exponentially (2, 4, 8, 16)
 - Origin: Imps invade every 5 minutes. Number of Imp Vanguards increases every 10 minutes, Vanguard damage increases with time
 - Tempus: Get 5 items on pickup instead of 3

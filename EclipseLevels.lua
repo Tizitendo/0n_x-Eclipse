@@ -416,7 +416,7 @@ Callback.add("onMinute", "OnyxAltEclipse5-onMinute", function(minute, second)
     end
     if gm.bool(AltEclipseArtifacts[5][9]) and minute % 2 == 0 then
         ChestRemoveCount = ChestRemoveCount + 1
-        if gm.bool(AltEclipseArtifacts[6][9]) and math.random(1, 4) == 5 then
+        if gm.bool(AltEclipseArtifacts[6][9]) and math.random(1, 3) == 5 then
             ChestRemoveCount = ChestRemoveCount + 1
         end
         EmptyChest()
@@ -657,9 +657,9 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
 
             if currentArtifact[i][2] == "cognation" then
                 local Stage = Stage.wrap(args[1].value)
-                Stage.interactable_spawn_points = Stage.interactable_spawn_points * 1.3
+                Stage.interactable_spawn_points = Stage.interactable_spawn_points * 1.2
                 local function RevertStageCredits(Stage)
-                    Stage.interactable_spawn_points = Stage.interactable_spawn_points / 1.3
+                    Stage.interactable_spawn_points = Stage.interactable_spawn_points / 1.2
                 end
                 Alarm.create(RevertStageCredits, 1, Stage)
             end

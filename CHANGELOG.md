@@ -6,10 +6,11 @@
 * 7) Ally Healing: -50%
 * Eclipse 4: Nerfed speed to 20%
 * Eclipse 7: Nerfed Damage to 25%
+* Eclipse 8: Extra damage from e7 doesn't apply curse
 * Fixed bug with e3 that let enemies drop gold after the tp event
 * Reworked e6 artifact display
 * Prestige now starts at 2 mountain buffs
-* Cognation stage credits increased by 30%
+* Cognation stage credits increased by 20%
 * Tempus now gives 5 Items
 * Origin: reduced the amount of Vanguards spawning, increased vanduard damage
 
