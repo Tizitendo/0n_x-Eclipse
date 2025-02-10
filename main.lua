@@ -17,6 +17,8 @@ end)
 local Eclipse = nil
 local eclipses = {}
 local EclipseArtifacts = {}
+local AlternativeEclipses = {}
+local SelectMenu = nil
 
 Initialize(function()
     local ArtifactDisplay = List.wrap(Global.artifact_display_list)
@@ -34,39 +36,64 @@ Initialize(function()
     eclipses[9]:set_sprite(Resources.sprite_load("Onyx", "Eclipse9", PATH .. "Eclipse9.png", 2, 13, 13),
         Resources.sprite_load("Onyx", "Eclipse9_2x", PATH .. "Eclipse9_2x.png", 6, 20, 19))
     local EclipseDisplay = List.wrap(GM.variable_global_get("difficulty_display_list_eclipse"))
-    
+
     if Mod.find("Robomandoslab-StarstormReturns") ~= nil then
         EclipseDisplay:add(Wrap.wrap(eclipses[9]))
     end
 
     for i = 1, 9 do
-        EclipseArtifacts[i] = Artifact.new("OnyxEclipse", "eclipse"..i)
-        EclipseArtifacts[i]:set_sprites(Resources.sprite_load("Onyx", "ArtiEclipse"..i, PATH .. "ArtiEclipse"..i..".png", 3, 11, 12), 1)
+        EclipseArtifacts[i] = Artifact.new("OnyxEclipse", "eclipse" .. i)
+        EclipseArtifacts[i]:set_sprites(Resources.sprite_load("Onyx", "ArtiEclipse" .. i,
+            PATH .. "ArtiEclipse" .. i .. ".png", 3, 11, 12), 1)
+        table.insert(AlternativeEclipses, 0)
     end
-    ArtifactDisplay:delete(#ArtifactDisplay-1)
+    --table.insert(AlternativeEclipses, Artifact.new("OnyxAltEclipse", "alteclipse6"))
+    AlternativeEclipses[6] = Artifact.new("OnyxAltEclipse", "alteclipse6")
+    AlternativeEclipses[6]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse6",
+            PATH .. "ArtiAltEclipse6.png", 3, 11, 12), 1)
+    AlternativeEclipses[7] = Artifact.new("OnyxAltEclipse", "alteclipse7")
+    AlternativeEclipses[7]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse7",
+            PATH .. "ArtiAltEclipse7.png", 3, 11, 12), 1)
+    AlternativeEclipses[1] = Artifact.new("OnyxAltEclipse", "alteclipse1")
+    AlternativeEclipses[1]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse1",
+            PATH .. "ArtiAltEclipse1.png", 3, 11, 12), 1)
+    AlternativeEclipses[5] = Artifact.new("OnyxAltEclipse", "alteclipse5") 
+    AlternativeEclipses[5]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse5",
+            PATH .. "ArtiAltEclipse5.png", 3, 11, 12), 1)
 
-    gm.post_script_hook(gm.constants.difficulty_eclipse_get_max_available_level_for_survivor, function(self, other, result, args)
-        --result.value = 999
-        local Survivors = Global.class_survivor
-        if params.Unlocked9[Survivors[args[1].value + 1][1].."-"..Survivors[args[1].value + 1][2]] then
-            result.value = 9
-        end
-    end)
+    gm.post_script_hook(gm.constants.difficulty_eclipse_get_max_available_level_for_survivor,
+        function(self, other, result, args)
+            -- result.value = 999
+            local Survivors = Global.class_survivor
+            if params.Unlocked9[Survivors[args[1].value + 1][1] .. "-" .. Survivors[args[1].value + 1][2]] then
+                result.value = 9
+            end
+
+            for i = #ArtifactDisplay, 1, -1 do
+                ArtifactDisplay:delete(i - 1)
+            end
+            for i = 1, result.value do
+                if Wrap.wrap(AlternativeEclipses[i]) ~= 0 then
+                    ArtifactDisplay:add(Wrap.wrap(AlternativeEclipses[i]))
+                end
+            end
+        end)
 
     -- check if e8 was beaten
     Callback_Raw.add(Callback.TYPE.onGameEnd, "OnyxEclipse-onGameEnd", function(self, other, result, args)
         if self ~= nil and self.object_index == gm.constants.oCommandFinal and eclipses[8]:is_active() then
             local Survivors = Global.class_survivor
-            params.Unlocked9[Survivors[GM._mod_player_get_survivor(Player.get_client()) + 1][1].."-"..Survivors[GM._mod_player_get_survivor(Player.get_client()) + 1][2]] = true
+            params.Unlocked9[Survivors[GM._mod_player_get_survivor(Player.get_client()) + 1][1] .. "-" ..
+                Survivors[GM._mod_player_get_survivor(Player.get_client()) + 1][2]] = true
             Toml.save_cfg(_ENV["!guid"], params)
         end
     end)
 
     -- make eclipse 9 unlockable
     memory.dynamic_hook_mid("max_diff_level_fix", {"rdi"}, {"RValue*"}, 0,
-    gm.get_script_function_address(106251):add(475), function(args)
-        args[1].value = 9.0
-    end)
+        gm.get_script_function_address(106251):add(475), function(args)
+            args[1].value = 9.0
+        end)
 
     -- get the max eclipse level of all survivors for gold eclipse
     local MaxEclipse = 9
@@ -98,6 +125,7 @@ Initialize(function()
     Eclipse:set_primary_color(Color(0x62a8e5))
     Eclipse:set_sound(Resources.sfx_load("Onyx", "EclipseSfx", PATH .. "eclipse.ogg"))
 
+    local ArtifactMenu = nil
     gm.pre_script_hook(gm.constants.game_lobby_start, function(self, other, result, args)
         local DifficultyDisplay = List.wrap(GM.variable_global_get("difficulty_display_list"))
 
@@ -110,24 +138,42 @@ Initialize(function()
         end
 
         for i = #ArtifactDisplay, 1, -1 do
-            for o = 1, 9 do
-                if ArtifactDisplay[i] == Wrap.wrap(EclipseArtifacts[o]) then
-                    ArtifactDisplay:delete(i-1)
-                end
+            ArtifactDisplay:delete(i - 1)
+        end
+
+        local BaseArtifacts = {}
+        for k, v in ipairs(Global.class_artifact) do
+            if v ~= 0 and v[2] ~= 0 and v[1] ~= "OnyxEclipse" then
+                table.insert(BaseArtifacts, v)
             end
+        end
+
+        for i = 1, #BaseArtifacts do
+            ArtifactDisplay:add(Wrap.wrap(Artifact.find(BaseArtifacts[i][1], BaseArtifacts[i][2])))
         end
 
         if (self and self.class_ind == nil) or params.ShowArtifacts then
             for i = 1, 8 do
                 ArtifactDisplay:add(Wrap.wrap(EclipseArtifacts[i]))
             end
+            for i = 1, #AlternativeEclipses do
+                if Wrap.wrap(AlternativeEclipses[i]) ~= 0 then
+                    ArtifactDisplay:add(Wrap.wrap(AlternativeEclipses[i]))
+                end
+            end
         end
 
         if self and self.class_ind == nil then
-            
+
         else
             DifficultyDisplay:add(Wrap.wrap(Eclipse))
         end
+
+        local function WaitForInit()
+            local SelectMenu = Instance.find(Object.find("ror", "SelectMenu"))
+            ArtifactMenu = SelectMenu.sections[4]
+        end
+        Alarm.create(WaitForInit, 25)
     end)
 
     -- check which eclipse difficulty is active, if any
@@ -138,11 +184,17 @@ Initialize(function()
                 GM.variable_global_set("__gamemode_current", 1)
                 GM.game_lobby_start()
                 GM.room_goto(gm.constants.rSelect)
+                local function Wait()
+                    local SelectMenu = Instance.find(Object.find("ror", "SelectMenu"))
+                    table.insert(SelectMenu.sections, ArtifactMenu)
+                    SelectMenu.section_number = 4
+                end
+                Alarm.create(Wait, 10)
             end
         end
         Alarm.create(OpenEclipse, 1)
     end)
-    
+
     require("EclipseLevels")
 end)
 

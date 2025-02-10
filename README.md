@@ -5,12 +5,18 @@
 1) StageStart, Director Credits: +500%
 2) Teleporter Gains Radius
 3) Enemies Can Spawn After TP Event
-4) Enemy Speed: +25%
+4) Enemy Speed: +20%
 5) Chest Prices: +60%
 6) Every Stage, Activate a Random Artifact (Get +1 Artifact every 5 stages)
-7) Enemy Damage: +30%
+7) Enemy Damage: +25%
 8) Allies receive permanent damage
 9) ??? (requires starstorm)
+
+Added alternative Eclipse Levels
+1) Ally Starting Health: -50%
+5) Every 2 Minutes Empty 1 Random Chest
+6) Buffs All Eclipse Modifiers
+7) Ally Healing: -50%
 
 Artifacts (all artifact changes only apply in eclipse):
 - Modded artifacts can be added to the artifact pool by just activating them (might break for some modded artifacts)

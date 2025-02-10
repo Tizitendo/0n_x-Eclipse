@@ -1,3 +1,14 @@
+## 1.1.4
+* Added alt eclipse levels
+* 1) Ally Starting Health: -50%
+* 5) Every 2 Minutes Empty 1 Random Chest
+* 6) Buffs All Eclipse Modifiers
+* 7) Ally Healing: -50%
+* Eclipse 4: Nerfed speed to 20%
+* Eclipse 7: Nerfed Damage to 25%
+* Fixed bug with e3 that let enemies drop gold after the tp event
+* Changed e6 artifact display
+
 ## 1.1.3
 * Added eclipse 9 back into the game, now working (requires starstorm installed)
 * Artifact textures and descriptions
