@@ -1,3 +1,6 @@
+## 1.1.5
+* swapped alt eclipse 6 and 7
+
 ## 1.1.4
 * Added alt eclipse levels
 * 1) Ally Starting Health: -50%

@@ -81,7 +81,7 @@
         },
         "alteclipse6": {
             "name": "Eclipse (6) Alt",
-            "description": "Buffs All <r>Eclipse Modifiers</c>"
+            "description": "Ally Healing: <r>-50%</c>"
         },
         "eclipse7": {
             "name": "Eclipse (7)",
@@ -89,7 +89,7 @@
         },
         "alteclipse7": {
             "name": "Eclipse (7) Alt",
-            "description": "Ally Healing: <r>-50%</c>"
+            "description": "Buffs All <r>Eclipse Modifiers</c>"
         },
         "eclipse8": {
             "name": "Eclipse (8)",
