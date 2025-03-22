@@ -13,10 +13,10 @@
 9) ??? (requires starstorm)
 
 Added alternative Eclipse Levels
-(1) Ally Starting Health: -50%\n
-(5) Every 2 Minutes Empty 1 Random Chest\n
-(6) Ally Healing: -50%\n
-(7) Buffs All Eclipse Modifiers\n
+- (1) Ally Starting Health: -50%
+- (5) Every 2 Minutes Empty 1 Random Chest
+- (6) Ally Healing: -50%
+- (7) Buffs All Eclipse Modifiers
 
 Artifacts (all artifact changes only apply in eclipse):
 - Modded artifacts can be added to the artifact pool by just activating them (might break for some modded artifacts)
