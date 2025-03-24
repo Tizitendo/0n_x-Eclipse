@@ -4,7 +4,7 @@
 - Each eclipse modifier can also be turned on individually via artifacts
 1) StageStart, Director Credits: +500%
 2) Teleporter Gains Radius
-3) Enemies Can Spawn After TP Event
+3) Enemies Can Spawn After TP Event (won't drop gold)
 4) Enemy Speed: +20%
 5) Chest Prices: +60%
 6) Every Stage, Activate a Random Artifact (Get +1 Artifact every 5 stages)

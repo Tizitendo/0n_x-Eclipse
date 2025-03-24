@@ -1,3 +1,10 @@
+## 1.1.6
+* e6 is now alt e8
+* alt e6 is now normal e6
+* enemies spawned by e1 now drop 50% less gold
+* e2 teleporter radius only disappears after boss has been killed
+* alt e5 time between chests emptied increased to 3 minutes from 2
+
 ## 1.1.5
 * swapped alt eclipse 6 and 7
 

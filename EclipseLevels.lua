@@ -11,6 +11,7 @@ local RadiusMul = 0
 local frame = 0
 local Tele_circles = {}
 local FinishedTele = false
+local KilledBoss = false
 local EndFight = false
 local NumArtifacts = 0
 local currentArtifact = {}
@@ -112,6 +113,7 @@ Callback.add("onStageStart", "OnyxEclipse1-onStageStart", function()
     disableChests = true
     Tele_circles = {}
     FinishedTele = false
+    KilledBoss = false
 
     if gm.bool(EclipseArtifacts[1][9]) then
         Director.bonus_rate = Director.bonus_rate + 2
@@ -146,11 +148,11 @@ end)
 
 -- doesn't use drop_gold_and_exp to keep barrel gold the same
 gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
-    if gm.bool(EclipseArtifacts[1][9]) then
+    if ExtraCreditsEnabled > 0 then
         if gm.bool(AltEclipseArtifacts[7][9]) then
-            self.exp_worth = self.exp_worth * 0.85
+            self.exp_worth = self.exp_worth * 0.4
         else
-            self.exp_worth = self.exp_worth * 0.90
+            self.exp_worth = self.exp_worth * 0.5
         end
     end
 end)
@@ -196,6 +198,10 @@ Callback.add("onStep", "OnyxEclipse2-onStep", function()
                 end
             end
 
+            if Teleporter.time == Teleporter.maxtime - 1 and not KilledBoss and (Teleporter.object_index == gm.constants.oTeleporter or Teleporter.object_index == gm.constants.oTeleporterEpic) then
+                Teleporter.time = Teleporter.time - 1
+            end
+
             -- lock chests outside of tp radius
             if disableChests then
                 disableChests = false
@@ -224,6 +230,10 @@ Callback.add("onStep", "OnyxEclipse2-onStep", function()
         end
     end
 
+end)
+
+gm.post_script_hook(gm.constants.update_boss_party_active_gml_Object_oDirectorControl_Create_0, function(self, other, result, args)
+    KilledBoss = true
 end)
 
 Callback.add("onDraw", "OnyxEclipse2-onDraw", function()
@@ -414,7 +424,7 @@ Callback.add("onMinute", "OnyxAltEclipse5-onMinute", function(minute, second)
             return;
         end
     end
-    if gm.bool(AltEclipseArtifacts[5][9]) and minute % 2 == 0 then
+    if gm.bool(AltEclipseArtifacts[5][9]) and minute % 3 == 0 then
         ChestRemoveCount = ChestRemoveCount + 1
         if gm.bool(AltEclipseArtifacts[7][9]) and math.random(1, 3) == 5 then
             ChestRemoveCount = ChestRemoveCount + 1
@@ -434,9 +444,9 @@ gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result,
         end
     end
 end)
----- alt eclipse 7 ----
+---- eclipse 6 ----
 gm.pre_script_hook(gm.constants.actor_heal_raw, function(self, other, result, args)
-    if gm.bool(AltEclipseArtifacts[6][9]) and args[1].value.team == 1 then
+    if gm.bool(EclipseArtifacts[6][9]) and args[1].value.team == 1 then
         if gm.bool(AltEclipseArtifacts[7][9]) then
             args[2].value = args[2].value * 0.4
         else
@@ -558,7 +568,7 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
         end
     end
 
-    if gm.bool(EclipseArtifacts[6][9]) then
+    if gm.bool(AltEclipseArtifacts[8][9]) then
         NumArtifacts = math.min(math.floor((Director.stages_passed + 1) / 5 + 1), 3)
         -- NumArtifacts = 3
         -- log.warning(NumArtifacts)
