@@ -47,19 +47,22 @@ Initialize(function()
             PATH .. "ArtiEclipse" .. i .. ".png", 3, 11, 12), 1)
         table.insert(AlternativeEclipses, 0)
     end
-    --table.insert(AlternativeEclipses, Artifact.new("OnyxAltEclipse", "alteclipse6"))
+    -- table.insert(AlternativeEclipses, Artifact.new("OnyxAltEclipse", "alteclipse6"))
     AlternativeEclipses[8] = Artifact.new("OnyxAltEclipse", "alteclipse8")
-    AlternativeEclipses[8]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse8",
-            PATH .. "ArtiAltEclipse8.png", 3, 11, 12), 1)
-    AlternativeEclipses[7] = Artifact.new("OnyxAltEclipse", "alteclipse7")
-    AlternativeEclipses[7]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse7",
-            PATH .. "ArtiAltEclipse7.png", 3, 11, 12), 1)
+    AlternativeEclipses[8]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse8", PATH .. "ArtiAltEclipse8.png",
+        3, 11, 12), 1)
+    AlternativeEclipses[6] = Artifact.new("OnyxAltEclipse", "alteclipse6")
+    AlternativeEclipses[6]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse6", PATH .. "ArtiAltEclipse6.png",
+        3, 11, 12), 1)
     AlternativeEclipses[1] = Artifact.new("OnyxAltEclipse", "alteclipse1")
-    AlternativeEclipses[1]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse1",
-            PATH .. "ArtiAltEclipse1.png", 3, 11, 12), 1)
-    AlternativeEclipses[5] = Artifact.new("OnyxAltEclipse", "alteclipse5") 
-    AlternativeEclipses[5]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse5",
-            PATH .. "ArtiAltEclipse5.png", 3, 11, 12), 1)
+    AlternativeEclipses[1]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse1", PATH .. "ArtiAltEclipse1.png",
+        3, 11, 12), 1)
+    AlternativeEclipses[5] = Artifact.new("OnyxAltEclipse", "alteclipse5")
+    AlternativeEclipses[5]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse5", PATH .. "ArtiAltEclipse5.png",
+        3, 11, 12), 1)
+    AlternativeEclipses[7] = Artifact.new("OnyxAltEclipse", "alteclipse7")
+    AlternativeEclipses[7]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse7", PATH .. "ArtiAltEclipse7.png",
+        3, 11, 12), 1)
 
     gm.post_script_hook(gm.constants.difficulty_eclipse_get_max_available_level_for_survivor,
         function(self, other, result, args)

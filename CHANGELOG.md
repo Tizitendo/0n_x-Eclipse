@@ -1,3 +1,12 @@
+## 1.1.8
+* Added new e7: Enemy credit scaling +25%
+* moved previous e7 to alt e7
+* moved previous alt e7 to alt e6
+* nerfed alt e6 (buffs all eclipse levels)
+
+## 1.1.7
+* increased curse apply threshhold to 5% maxhp
+
 ## 1.1.6
 * e6 is now alt e8
 * alt e6 is now normal e6
