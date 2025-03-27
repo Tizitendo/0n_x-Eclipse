@@ -1,4 +1,13 @@
 ## 1.1.8
+* removed e7
+* swapped e5 (chest prices) and e6 (healing reduction)
+* alt e6 (eclipse level buffs) -> alt e7
+* alt e7 (enemy damage) -> alt e5
+* alt e5 (empty chests) -> alt e6
+* nerfed e4 +60% chest prices -> +40% chest prices
+split e4 into +20% speed (e4) and -50% enemy cooldowns (e7)
+
+## 1.1.8
 * Added new e7: Enemy credit scaling +25%
 * moved previous e7 to alt e7
 * moved previous alt e7 to alt e6

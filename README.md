@@ -6,17 +6,17 @@
 2) Teleporter Gains Radius
 3) Enemies Can Spawn After TP Event (won't drop gold)
 4) Enemy Speed: +20%
-5) Chest Prices: +60%
-6) Ally Healing: -50%
-7) Enemy Credit Scaling: +25%
+5) Ally Healing: -50%
+6) Chest Prices: +40%
+7) Enemy Cooldowns: -50%
 8) Allies receive permanent damage
 9) ??? (requires starstorm)
 
 Added alternative Eclipse Levels
 - (1) Ally Starting Health: -50%
-- (5) Every 3 Minutes Empty 1 Random Chest
-- (6) Buffs All Eclipse Modifiers
-- (7) Enemy Damage: +25%
+- (5) Enemy Damage: +25%
+- (6) Every 3 Minutes Empty 1 Random Chest
+- (7) Buffs All Eclipse Modifiers
 - (8) Every Stage, Activate a Random Artifact (Get +1 Artifact every 5 stages)
 
 Artifacts (all artifact changes only apply in eclipse):
