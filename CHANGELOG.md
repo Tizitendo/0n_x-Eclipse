@@ -1,4 +1,7 @@
-## 1.1.8
+## 1.1.10
+* fixed e8 curse
+
+## 1.1.9
 * removed e7
 * swapped e5 (chest prices) and e6 (healing reduction)
 * alt e6 (eclipse level buffs) -> alt e7

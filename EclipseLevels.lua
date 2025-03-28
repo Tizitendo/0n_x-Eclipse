@@ -203,6 +203,15 @@ Callback.add("onStep", "OnyxEclipse2-onStep", function()
                 end
             end
 
+            -- don't let teleporter finish unless boss is killed
+            if Teleporter.object_index == gm.constants.oTeleporter or Teleporter.object_index ==
+                gm.constants.oTeleporterEpic then
+                if KilledBoss and Teleporter.time == Teleporter.maxtime - 2 then
+                    Teleporter.time = Teleporter.time + 2
+                elseif Teleporter.time == Teleporter.maxtime - 1 then
+                    Teleporter.time = Teleporter.time - 1
+                end
+            end
             if Teleporter.time == Teleporter.maxtime - 1 and not KilledBoss and
                 (Teleporter.object_index == gm.constants.oTeleporter or Teleporter.object_index ==
                     gm.constants.oTeleporterEpic) then
@@ -472,6 +481,10 @@ gm.post_script_hook(gm.constants.recalculate_stats, function(self, other, result
         end
     end
 end)
+---- Alt ----
+gm.post_script_hook(gm.constants._ui_check_selected, function(self, other, result, args)
+    -- Helper.log_hook(self, other, result, args)
+end)
 
 ---- eclipse 8 ----
 -- apply curse
@@ -488,28 +501,33 @@ Callback.add("onStageStart", "OnyxEclipse8-onStageStart", function()
     CurseIndex = 0
 end)
 
-gm.post_script_hook(gm.constants.actor_proc_on_damage, function(self, other, result, args)
+gm.post_script_hook(gm.constants.damage_inflict_internal_deduct_hp, function(self, other, result, args)
     if gm.bool(EclipseArtifacts[8][9]) and self.team == 1 then
         if gm.bool(EclipseArtifacts[7][9]) then
-            if args[1].value.damage_true / EnemyStats > Curse.get_effective(Instance.wrap(self)) * 0.05 then
+            if args[1].value / EnemyDamageBuffed > Curse.get_effective(Instance.wrap(self)) * 0.05 then
                 Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex,
-                    0.8 * 0.4 * args[1].value.damage_true / self.maxhp)
+                    0.8 * 0.4 * args[1].value / self.maxhp)
                 CurseIndex = CurseIndex + 1
                 if gm.bool(AltEclipseArtifacts[7][9]) then
                     Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex,
-                        0.8 * 0.1 * args[1].value.damage_true / self.maxhp)
+                        0.8 * 0.1 * args[1].value / self.maxhp)
                     CurseIndex = CurseIndex + 1
                 end
             end
         else
-            if args[1].value.damage_true > Curse.get_effective(Instance.wrap(self)) * 0.05 then
-                Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.4 * args[1].value.damage_true / self.maxhp)
+            if args[1].value > Curse.get_effective(Instance.wrap(self)) * 0.05 then
+                Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.4 * args[1].value / self.maxhp)
                 CurseIndex = CurseIndex + 1
                 if gm.bool(AltEclipseArtifacts[7][9]) then
                     Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex,
-                        0.1 * args[1].value.damage_true / self.maxhp)
+                        0.1 * args[1].value / self.maxhp)
                     CurseIndex = CurseIndex + 1
                 end
+            end
+        end
+        if self.hp <= 0 then
+            for i = 0, CurseIndex do
+                Curse.remove(self, "OnyxEclipse-PermaDamage" .. i)
             end
         end
     end
