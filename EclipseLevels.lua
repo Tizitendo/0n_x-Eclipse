@@ -171,8 +171,8 @@ Callback.add("onSecond", "OnyxEclipse1-onSecond", function(minute, second)
         end
     end
 
-    if Teleporter.object_index == gm.constants.oTeleporter or Teleporter.object_index == gm.constants.oTeleporterEpic and
-        Teleporter.time >= Teleporter.maxtime - 1 then
+    if Teleporter ~= nil and (Teleporter.object_index == gm.constants.oTeleporter or Teleporter.object_index == gm.constants.oTeleporterEpic) and
+        (Teleporter.time == Teleporter.maxtime - 1 or Teleporter.time == Teleporter.maxtime - 2) then
         Director.points = Director.points - (2 + 1.7 * minute) * 0.4
     end
 end)
