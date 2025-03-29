@@ -1,3 +1,7 @@
+## 1.1.11
+* fixed dios not reseting curse
+* killing the boss at 99% charge now finishes the tp event
+
 ## 1.1.10
 * fixed e8 curse
 
