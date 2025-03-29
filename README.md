@@ -5,7 +5,7 @@
 1) StageStart, Director Credits: +500%
 2) Teleporter Gains Radius
 3) Enemies Can Spawn After TP Event (won't drop gold)
-4) Enemy Speed: +20%
+4) Enemy Speed: +15%
 5) Ally Healing: -50%
 6) Chest Prices: +40%
 7) Enemy Cooldowns: -50%

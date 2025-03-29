@@ -34,10 +34,10 @@ local BuffedTeleRadius = 500
 local PriceIncrease = 1.4
 local EnemyDamage = 1.25
 local EnemyDamageBuffed = 1.3
-local EnemyMoveSpeed = 1.2
-local BuffedEnemyMoveSpeed = 1.25
-local EnemyAttackSpeed = 1.2
-local BuffedEnemyAttackSpeed = 1.25
+local EnemyMoveSpeed = 1.15
+local BuffedEnemyMoveSpeed = 1.2
+local EnemyAttackSpeed = 1.15
+local BuffedEnemyAttackSpeed = 1.2
 local DefaultSacrificeDropChance = 15
 
 for i = 1, 9 do
@@ -162,13 +162,18 @@ gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result,
 end)
 
 -- add director credits
-Callback.add("onSecond", "OnyxEclipse1-onSecond", function(arg1, arg2)
+Callback.add("onSecond", "OnyxEclipse1-onSecond", function(minute, second)
     if ExtraCreditsEnabled > 0 then
         Director.points = Director.points + (Director.stages_passed + 1) * 2 + 5
         ExtraCreditsEnabled = ExtraCreditsEnabled - 1
         if ExtraCreditsEnabled == 1 then
             Director.bonus_rate = Director.bonus_rate - 2
         end
+    end
+
+    if Teleporter.object_index == gm.constants.oTeleporter or Teleporter.object_index == gm.constants.oTeleporterEpic and
+        Teleporter.time >= Teleporter.maxtime - 1 then
+        Director.points = Director.points - (2 + 1.7 * minute) * 0.4
     end
 end)
 
@@ -211,11 +216,6 @@ Callback.add("onStep", "OnyxEclipse2-onStep", function()
                 elseif Teleporter.time == Teleporter.maxtime - 1 then
                     Teleporter.time = Teleporter.time - 1
                 end
-            end
-            if Teleporter.time == Teleporter.maxtime - 1 and not KilledBoss and
-                (Teleporter.object_index == gm.constants.oTeleporter or Teleporter.object_index ==
-                    gm.constants.oTeleporterEpic) then
-                Teleporter.time = Teleporter.time - 1
             end
 
             -- lock chests outside of tp radius
@@ -505,12 +505,10 @@ gm.post_script_hook(gm.constants.damage_inflict_internal_deduct_hp, function(sel
     if gm.bool(EclipseArtifacts[8][9]) and self.team == 1 then
         if gm.bool(EclipseArtifacts[7][9]) then
             if args[1].value / EnemyDamageBuffed > Curse.get_effective(Instance.wrap(self)) * 0.05 then
-                Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex,
-                    0.8 * 0.4 * args[1].value / self.maxhp)
+                Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.8 * 0.4 * args[1].value / self.maxhp)
                 CurseIndex = CurseIndex + 1
                 if gm.bool(AltEclipseArtifacts[7][9]) then
-                    Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex,
-                        0.8 * 0.1 * args[1].value / self.maxhp)
+                    Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.8 * 0.1 * args[1].value / self.maxhp)
                     CurseIndex = CurseIndex + 1
                 end
             end
@@ -519,8 +517,7 @@ gm.post_script_hook(gm.constants.damage_inflict_internal_deduct_hp, function(sel
                 Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.4 * args[1].value / self.maxhp)
                 CurseIndex = CurseIndex + 1
                 if gm.bool(AltEclipseArtifacts[7][9]) then
-                    Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex,
-                        0.1 * args[1].value / self.maxhp)
+                    Curse.apply(self, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.1 * args[1].value / self.maxhp)
                     CurseIndex = CurseIndex + 1
                 end
             end

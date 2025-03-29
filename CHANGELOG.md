@@ -1,3 +1,7 @@
+## 1.1.12
+* reduced enemy credits gain by 40% when tp is at 99%
+* nerfed e4 speed gain to 15%
+
 ## 1.1.11
 * fixed dios not reseting curse
 * killing the boss at 99% charge now finishes the tp event
