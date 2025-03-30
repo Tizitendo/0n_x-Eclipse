@@ -1,5 +1,5 @@
 log.info("Successfully loaded " .. _ENV["!guid"] .. ".")
-mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto()
+mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
 PATH = _ENV["!plugins_mod_folder_path"] .. "/Assets/"
 mods.on_all_mods_loaded(function()
     for k, v in pairs(mods) do
@@ -95,7 +95,9 @@ Initialize(function()
     -- make eclipse 9 unlockable
     memory.dynamic_hook_mid("max_diff_level_fix", {"rdi"}, {"RValue*"}, 0,
         gm.get_script_function_address(106251):add(475), function(args)
-            args[1].value = 9.0
+            if Mod.find("Robomandoslab-StarstormReturns") ~= nil then
+                args[1].value = 9.0
+            end
         end)
 
     -- get the max eclipse level of all survivors for gold eclipse
@@ -174,7 +176,9 @@ Initialize(function()
 
         local function WaitForInit()
             local SelectMenu = Instance.find(Object.find("ror", "SelectMenu"))
-            ArtifactMenu = SelectMenu.sections[4]
+            if SelectMenu.sections then
+                ArtifactMenu = SelectMenu.sections[4]
+            end
         end
         Alarm.create(WaitForInit, 25)
     end)

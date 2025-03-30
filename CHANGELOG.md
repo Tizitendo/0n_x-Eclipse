@@ -1,3 +1,18 @@
+## 1.2,0
+* now multiplayer compatible (for now go into cursehelper main.lua and set "mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto()" to "mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true))"
+* e8 curse now shows up on the minihud
+* nerfed e6 (chest prices to +30%)
+* nerfed e7 (cooldown reduction to -40%)
+* reworked e1 to last 60 seconds and changed scaling, also made description more accurate
+* excluded imps from e7
+* excluded trokks from e4
+* fix tp not requiring boss kill if you killed a boss (anything with bossbar) before activating tp
+* fixed crash after beating e8 without starstorm installed
+* probably fixed weird sound bug
+
+## 1.1.13
+* fixed error spam with last version
+
 ## 1.1.12
 * reduced enemy credits gain by 40% when tp is at 99%
 * nerfed e4 speed gain to 15%

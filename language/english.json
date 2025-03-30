@@ -7,39 +7,39 @@
         },
         "eclipse1": {
             "name": "Eclipse (1)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n"
+            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>"
         },
         "eclipse2": {
             "name": "Eclipse (2)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>"
+            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>"
         },
         "eclipse3": {
             "name": "Eclipse (3)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>"
+            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>"
         },
         "eclipse4": {
             "name": "Eclipse (4)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>"
+            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>"
         },
         "eclipse5": {
             "name": "Eclipse (5)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>"
+            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>"
         },
         "eclipse6": {
             "name": "Eclipse (6)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>\n( 6 )  Chest Prices: <r>+40%</c>"
+            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>\n( 6 )  Chest Prices: <r>+30%</c>"
         },
         "eclipse7": {
             "name": "Eclipse (7)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>\n( 6 )  Chest Prices: <r>+40%</c>\n( 7 )  Enemy Cooldowns: <r>-50%</c>"
+            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>\n( 6 )  Chest Prices: <r>+30%</c>\n( 7 )  Enemy Cooldowns: <r>-40%</c>"
         },
         "eclipse8": {
             "name": "Eclipse (8)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>\n( 6 )  Chest Prices: <r>+40%</c>\n( 7 )  Enemy Cooldowns: <r>-50%</c>\n( 8 )  Allies receive <r>permanent damage</c>"
+            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>\n( 6 )  Chest Prices: <r>+30%</c>\n( 7 )  Enemy Cooldowns: <r>-40%</c>\n( 8 )  Allies receive <r>permanent damage</c>"
         },
         "eclipse9": {
             "name": "<#b53f80>Eclipse (9)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+500%</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>\n( 6 )  Chest Prices: <r>+40%</c>\n( 7 )  Enemy Cooldowns: <r>-50%</c>\n( 8 )  Allies receive <r>permanent damage</c>\n<#b53f80>( 9 )  Includes All SSR Typhoon Modifiers</c>"
+            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>\n( 6 )  Chest Prices: <r>+30%</c>\n( 7 )  Enemy Cooldowns: <r>-40%</c>\n( 8 )  Allies receive <r>permanent damage</c>\n<#b53f80>( 9 )  Includes All SSR Typhoon Modifiers</c>"
         },
         "buffedeclipse1": {
             "name": "Eclipse (1)",
@@ -85,7 +85,7 @@
         },
         "eclipse1": {
             "name": "Eclipse (1)",
-            "description": "StageStart, Director Credits: <r>+500%</c>\n"
+            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c></c>\n"
         },
         "alteclipse1": {
             "name": "Eclipse (1) Alt",
@@ -113,7 +113,7 @@
         },
         "eclipse6": {
             "name": "Eclipse (6)",
-            "description": "Chest Prices: <r>+40%</c>"
+            "description": "Chest Prices: <r>+30%</c>"
         },
         "alteclipse6": {
             "name": "Eclipse (6) Alt",
@@ -121,7 +121,7 @@
         },
         "eclipse7": {
             "name": "Eclipse (7)",
-            "description": "Enemy Cooldowns: <r>-50%</c>"
+            "description": "Enemy Cooldowns: <r>-40%</c>"
         },
         "alteclipse7": {
             "name": "Eclipse (7) Alt",

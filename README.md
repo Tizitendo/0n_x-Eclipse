@@ -2,13 +2,13 @@
 
 - Adds the cut Eclipse gamemode back into the game
 - Each eclipse modifier can also be turned on individually via artifacts
-1) StageStart, Director Credits: +500%
+1) StageStart, Director Credits: +200% for 60s
 2) Teleporter Gains Radius
 3) Enemies Can Spawn After TP Event (won't drop gold)
 4) Enemy Speed: +15%
 5) Ally Healing: -50%
-6) Chest Prices: +40%
-7) Enemy Cooldowns: -50%
+6) Chest Prices: +30%
+7) Enemy Cooldowns: -40%
 8) Allies receive permanent damage
 9) ??? (requires starstorm)
 
