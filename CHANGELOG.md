@@ -1,4 +1,8 @@
-## 1.2,0
+## 1.2.1
+* Fixed to work with updated version of cursehelper (guide in last updated log is no longer needed)
+* Removed mini curse hud as it is now used in cursehelper
+
+## 1.2.0
 * now multiplayer compatible (for now go into cursehelper main.lua and set "mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto()" to "mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true))"
 * e8 curse now shows up on the minihud
 * nerfed e6 (chest prices to +30%)

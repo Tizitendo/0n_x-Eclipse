@@ -540,34 +540,8 @@ local function apply_Curse(player, damage)
     end
 end
 
-gm.post_script_hook(gm.constants.damage_inflict_raw, function(self, other, result, args)
-    log.warning("hi")
-end)
-
 gm.post_script_hook(gm.constants.damage_inflict_raw , function(self, other, result, args)
-    if gm._mod_net_isHost() and gm._mod_net_isOnline() then
-        local msg = damagePacket:message_begin()
-        msg:write_instance(Instance.wrap((args[1].value)))
-        msg:write_int(args[2].value.damage)
-        msg:send_to_all()
-    end
     apply_Curse(Instance.wrap(args[1].value), args[2].value.damage)
-end)
-
-damagePacket:onReceived(function(msg)
-    local player = Instance.wrap(msg:read_instance())
-    local damage = msg:read_int()
-    apply_Curse(player, damage)
-end)
-
--- draw curse on minihud
-gm.post_script_hook(gm.constants.hud_draw_health, function(self, other, result, args)
-    local actor = Instance.wrap(args[1].value)
-    if actor.m_id == Player.get_client().m_id and actor.maxhp ~= Curse.get_effective(actor) then
-        gm.draw_set_color(Color.from_hex(0xffffff))
-        gm.draw_rectangle(math.floor(actor.x + 0.5 + 37) - 75 * (1 - Curse.get_effective(actor) / actor.maxhp),
-            math.floor(actor.y + 0.5 - 74), math.floor(actor.x + 0.5 + 37), math.floor(actor.y + 0.5 - 69), true)
-    end
 end)
 
 ---- Alt ----
