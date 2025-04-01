@@ -1,3 +1,7 @@
+## 1.2.2
+* Fixed e3 not disabling gold drops after tp event
+* Fixed e2 sometimes requiring player to leave the circle to finish tp
+
 ## 1.2.1
 * Fixed to work with updated version of cursehelper (guide in last updated log is no longer needed)
 * Removed mini curse hud as it is now used in cursehelper

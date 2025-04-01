@@ -324,8 +324,8 @@ Callback.add("onSecond", "OnyxEclipse3-onSecond", function(minute, second)
     if gm.bool(EclipseArtifacts[3][9]) and Director:alarm_get(1) < 0 then
         Director.points = 0
         Director:alarm_set(1, 600)
-        if gm._mod_net_isHost() then
-            FinishedTele = true
+        FinishedTele = true
+        if gm._mod_net_isOnline() and gm._mod_net_isHost() then
             local msg = UpdatePacket:message_begin()
             msg:write_byte(FinishedTele)
             msg:send_to_all()
@@ -668,7 +668,6 @@ end)
 
 local function ArtifactNewLevel(stage)
     BaseSeed = BaseSeed + 100
-    log.warning(BaseSeed)
     if ActiveEclipse then
         for i = 1, 9 do
             eclipses[i]:set_allow_blight_spawns(true)
