@@ -1,3 +1,6 @@
+## 1.2.3
+* Increased Teleporter radius a bit
+
 ## 1.2.2
 * Fixed e3 not disabling gold drops after tp event
 * Fixed e2 sometimes requiring player to leave the circle to finish tp

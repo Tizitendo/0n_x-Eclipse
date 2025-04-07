@@ -30,7 +30,7 @@ local Interactables = {gm.constants.oChest1, gm.constants.oChest2, gm.constants.
 
 -- Parameters
 local TeleColor = 190540540
-local TeleRadius = 600
+local TeleRadius = 650
 local BuffedTeleRadius = 500
 local PriceIncrease = 1.3
 local EnemyDamage = 1.25
