@@ -30,7 +30,7 @@ local Interactables = {gm.constants.oChest1, gm.constants.oChest2, gm.constants.
 
 -- Parameters
 local TeleColor = 190540540
-local TeleRadius = 650
+local TeleRadius = 700
 local BuffedTeleRadius = 500
 local PriceIncrease = 1.3
 local EnemyDamage = 1.25
@@ -124,7 +124,7 @@ Callback.add("onStageStart", "OnyxEclipse1-onStageStart", function()
     FinishedTele = false
 
     if gm.bool(EclipseArtifacts[1][9]) then
-        if gm.bool(AltEclipseArtifacts[7][9]) then
+        if gm.bool(AltEclipseArtifacts[5][9]) then
             ExtraCreditsEnabled = 80
         else
             ExtraCreditsEnabled = 60
@@ -134,7 +134,7 @@ Callback.add("onStageStart", "OnyxEclipse1-onStageStart", function()
     if gm.bool(AltEclipseArtifacts[1][9]) then
         local allies = Instance.find_all(gm.constants.pFriend)
         for i = 1, #allies do
-            if gm.bool(AltEclipseArtifacts[7][9]) then
+            if gm.bool(AltEclipseArtifacts[5][9]) then
                 allies[i].hp = allies[i].hp * 0.35
             else
                 allies[i].hp = allies[i].hp * 0.5
@@ -145,7 +145,7 @@ end)
 gm.post_script_hook(gm.constants.instance_create_depth, function(self, other, result, args)
     if gm.bool(AltEclipseArtifacts[1][9]) and result.value ~= nil and result.value.hp ~= nil and result.value.team == 1 and
         result.value.object_index ~= gm.constants.oP then
-        if gm.bool(AltEclipseArtifacts[7][9]) then
+        if gm.bool(AltEclipseArtifacts[5][9]) then
             result.value.hp = result.value.hp * 0.35
         else
             result.value.hp = result.value.hp * 0.5
@@ -156,7 +156,7 @@ end)
 -- doesn't use drop_gold_and_exp to keep barrel gold the same
 gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
     if ExtraCreditsEnabled > 0 then
-        if gm.bool(AltEclipseArtifacts[7][9]) then
+        if gm.bool(AltEclipseArtifacts[5][9]) then
             self.exp_worth = self.exp_worth * 0.4
         else
             self.exp_worth = self.exp_worth * 0.5
@@ -189,7 +189,7 @@ Callback.add("onStep", "OnyxEclipse2-onStep", function()
         end
     end
 
-    if gm.bool(AltEclipseArtifacts[7][9]) then
+    if gm.bool(AltEclipseArtifacts[5][9]) then
         trueTeleRadius = BuffedTeleRadius
     else
         trueTeleRadius = TeleRadius
@@ -331,7 +331,7 @@ Callback.add("onSecond", "OnyxEclipse3-onSecond", function(minute, second)
             msg:send_to_all()
         end
     end
-    if gm.bool(AltEclipseArtifacts[7][9]) and FinishedTele then
+    if gm.bool(AltEclipseArtifacts[5][9]) and FinishedTele then
         Director.points = Director.points + 2
     end
 end)
@@ -385,7 +385,7 @@ gm.post_script_hook(gm.constants.recalculate_stats, function(self, other, result
     -- increase enemy speed
     if self.team == 2 and gm.bool(EclipseArtifacts[4][9]) and self.object_index ~= gm.constants.oGolemT and
         self.object_index ~= gm.constants.imp then
-        if gm.bool(AltEclipseArtifacts[7][9]) then
+        if gm.bool(AltEclipseArtifacts[5][9]) then
             self.pHmax_raw = self.pHmax_raw * BuffedEnemyMoveSpeed
             self.pHmax = self.pHmax * BuffedEnemyMoveSpeed
             self.attack_speed = self.attack_speed * BuffedEnemyAttackSpeed
@@ -400,21 +400,10 @@ end)
 ---- eclipse 5 ----
 gm.pre_script_hook(gm.constants.actor_heal_raw, function(self, other, result, args)
     if gm.bool(EclipseArtifacts[5][9]) and args[1].value.team == 1 then
-        if gm.bool(AltEclipseArtifacts[7][9]) then
+        if gm.bool(AltEclipseArtifacts[5][9]) then
             args[2].value = args[2].value * 0.4
         else
             args[2].value = args[2].value * 0.5
-        end
-    end
-end)
----- Alt ----
-gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
-    -- increase enemy damage
-    if gm.bool(AltEclipseArtifacts[5][9]) and self.team == 2.0 then
-        if gm.bool(AltEclipseArtifacts[7][9]) then
-            self.damage_base = self.damage_base * EnemyDamageBuffed
-        else
-            self.damage_base = self.damage_base * EnemyDamage
         end
     end
 end)
@@ -423,7 +412,7 @@ end)
 -- increase chest prices
 gm.pre_script_hook(gm.constants.interactable_init_cost, function(self, other, result, args)
     if args[2].value == 0 and gm.bool(EclipseArtifacts[6][9]) then
-        if gm.bool(AltEclipseArtifacts[7][9]) then
+        if gm.bool(AltEclipseArtifacts[5][9]) then
             args[3].value = args[3].value * 1.8
         else
             args[3].value = args[3].value * PriceIncrease
@@ -461,7 +450,7 @@ Callback.add("onMinute", "OnyxAltEclipse5-onMinute", function(minute, second)
     end
     if gm.bool(AltEclipseArtifacts[6][9]) and minute % 3 == 0 then
         ChestRemoveCount = ChestRemoveCount + 1
-        if gm.bool(AltEclipseArtifacts[7][9]) and math.random(1, 3) == 5 then
+        if gm.bool(AltEclipseArtifacts[5][9]) and math.random(1, 3) == 5 then
             math.randomseed(BaseSeed + minute)
             ChestRemoveCount = ChestRemoveCount + 1
         end
@@ -473,7 +462,7 @@ end)
 gm.post_script_hook(gm.constants.recalculate_stats, function(self, other, result, args)
     -- increase enemy attack speed
     if self.team == 2 and gm.bool(EclipseArtifacts[7][9]) then
-        if gm.bool(AltEclipseArtifacts[7][9]) then
+        if gm.bool(AltEclipseArtifacts[5][9]) then
             local actor = Instance.wrap(self)
             local skills = {actor:get_active_skill(0), actor:get_active_skill(1), actor:get_active_skill(2),
                             actor:get_active_skill(3)}
@@ -491,8 +480,29 @@ gm.post_script_hook(gm.constants.recalculate_stats, function(self, other, result
     end
 end)
 ---- Alt ----
-gm.post_script_hook(gm.constants._ui_check_selected, function(self, other, result, args)
-    -- Helper.log_hook(self, other, result, args)
+-- increase explosion height
+gm.pre_script_hook(gm.constants.fire_explosion, function(self, other, result, args)
+    if gm.bool(AltEclipseArtifacts[7][9]) and self.team == 2 then
+        if gm.bool(AltEclipseArtifacts[5][9]) then
+            args[9].value = args[9].value * 2
+        else
+            args[9].value = args[9].value * 2
+        end
+    end
+end)
+-- add more bullet tracers
+gm.pre_script_hook(gm.constants.fire_bullet, function(self, other, result, args)
+    if gm.bool(AltEclipseArtifacts[7][9]) and self and self.team == 2 and not args[12] then
+        args[5].value = args[5].value * 0.5
+        if gm.bool(AltEclipseArtifacts[5][9]) then
+            self:fire_bullet(args[1].value, args[2].value, args[3].value - 7.5, args[4].value, args[5].value, args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value, true)
+            self:fire_bullet(args[1].value, args[2].value, args[3].value - 15, args[4].value, args[5].value, args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value, true)
+            self:fire_bullet(args[1].value, args[2].value, args[3].value - 20, args[4].value, args[5].value, args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value, true)
+        else
+            self:fire_bullet(args[1].value, args[2].value, args[3].value - 7.5, args[4].value, args[5].value, args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value, true)
+            self:fire_bullet(args[1].value, args[2].value, args[3].value - 15, args[4].value, args[5].value, args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value, true)
+        end
+    end
 end)
 
 ---- eclipse 8 ----
@@ -517,7 +527,7 @@ local function apply_Curse(player, damage)
             if damage / EnemyDamageBuffed > Curse.get_effective(player) * 0.05 then
                 Curse.apply(player, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.8 * 0.4 * damage / player.maxhp)
                 CurseIndex = CurseIndex + 1
-                if gm.bool(AltEclipseArtifacts[7][9]) then
+                if gm.bool(AltEclipseArtifacts[5][9]) then
                     Curse.apply(player, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.8 * 0.1 * damage / player.maxhp)
                     CurseIndex = CurseIndex + 1
                 end
@@ -526,7 +536,7 @@ local function apply_Curse(player, damage)
             if damage > Curse.get_effective(player) * 0.05 then
                 Curse.apply(player, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.4 * damage / player.maxhp)
                 CurseIndex = CurseIndex + 1
-                if gm.bool(AltEclipseArtifacts[7][9]) then
+                if gm.bool(AltEclipseArtifacts[5][9]) then
                     Curse.apply(player, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.1 * damage / player.maxhp)
                     CurseIndex = CurseIndex + 1
                 end

@@ -109,7 +109,7 @@
         },
         "alteclipse5": {
             "name": "Eclipse (5) Alt",
-            "description": "Enemy Damage: <r>+25%</c>"
+            "description": "Buffs All <r>Eclipse Modifiers</c>"
         },
         "eclipse6": {
             "name": "Eclipse (6)",
@@ -125,7 +125,7 @@
         },
         "alteclipse7": {
             "name": "Eclipse (7) Alt",
-            "description": "Buffs All <r>Eclipse Modifiers</c>"
+            "description": "Enemy Attack Height: <r>+50%</c>"
         },
         "eclipse8": {
             "name": "Eclipse (8)",

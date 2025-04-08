@@ -1,3 +1,9 @@
+## 1.2.4
+* Increased Tele radius a bit more
+* moved alt e7 (buffs all eclipse modifiers) to e5
+* removed old alt e5
+* added new alt e7 (Enemy Attack Height: +50%)
+
 ## 1.2.3
 * Increased Teleporter radius a bit
 
