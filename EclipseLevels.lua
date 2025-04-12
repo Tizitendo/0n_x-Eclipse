@@ -57,6 +57,18 @@ for k, v in ipairs(Global.class_artifact) do
     end
 end
 
+local boar_card = Monster_Card.new(NAMESPACE, "BoarM")
+boar_card.object_id = Object.find("ror", "BoarM")
+boar_card.spawn_cost = 20
+boar_card.spawn_type = Monster_Card.SPAWN_TYPE.classic
+boar_card.can_be_blighted = false
+local bigboar_card = Monster_Card.new(NAMESPACE, "BoarR")
+bigboar_card.object_id = Object.find("ror", "BoarR")
+bigboar_card.spawn_cost = 150
+bigboar_card.spawn_type = Monster_Card.SPAWN_TYPE.classic
+bigboar_card.can_be_blighted = false
+local beach = Stage.find("ror-boarBeach")
+
 Callback.add("onGameStart", "OnyxEclipseGen-onGameStart", function()
     ExtraCreditsEnabled = 0
     player = {}
@@ -96,6 +108,32 @@ Callback.add("onGameStart", "OnyxEclipseGen-onGameStart", function()
             end
         end
     end
+
+    for i = 9, 1, -1 do
+        if ((AltEclipseArtifacts[i] ~= nil and AltEclipseArtifacts[i][9]) or EclipseArtifacts[i][9]) then
+            ActiveEclipse = true
+        end
+    end
+
+    -- add little boars to boar beach when eclipse is active
+    local beach_cards = List.wrap(beach.spawn_enemies)
+    if ActiveEclipse then
+        for i = #beach_cards, 1, -1 do
+            if Monster_Card.wrap(beach_cards[i]) == boar_card then
+                return
+            end
+        end
+        beach:add_monster(boar_card)
+        beach:add_monster(boar_card)
+        beach:add_monster(bigboar_card)
+        -- beach:add_monster(bigboar_card)
+    else
+        for i = #beach_cards, 1, -1 do
+            if Monster_Card.wrap(beach_cards[i]) == boar_card then
+                table.remove(List.wrap(beach.spawn_enemies), i)
+            end
+        end
+    end
 end)
 
 gm.pre_script_hook(gm.constants.interactable_set_active, function(self, other, result, args)
@@ -122,6 +160,7 @@ Callback.add("onStageStart", "OnyxEclipse1-onStageStart", function()
     disableChests = true
     Tele_circles = {}
     FinishedTele = false
+    Teleporter = nil
 
     if gm.bool(EclipseArtifacts[1][9]) then
         if gm.bool(AltEclipseArtifacts[5][9]) then
@@ -167,14 +206,14 @@ end)
 -- add director credits
 Callback.add("onSecond", "OnyxEclipse1-onSecond", function(minute, second)
     if ExtraCreditsEnabled > 0 then
-        Director.points = Director.points + (5 + 1.7 * minute)
+        Director.points = Director.points + (6 + 1.5 * minute)
         ExtraCreditsEnabled = ExtraCreditsEnabled - 1
     end
 
-    if Teleporter and Teleporter.maxtime and
+    if Teleporter and
         (Teleporter.object_index == gm.constants.oTeleporter or Teleporter.object_index == gm.constants.oTeleporterEpic) and
         (Teleporter.time == Teleporter.maxtime - 1 or Teleporter.time == Teleporter.maxtime - 2) then
-        Director.points = Director.points - (2 + 1.7 * minute) * 0.4
+        Director.points = Director.points - (2 + 1.7 * minute) * 0.5
     end
 end)
 
@@ -212,7 +251,7 @@ Callback.add("onStep", "OnyxEclipse2-onStep", function()
             -- don't let teleporter finish unless boss is killed
             if Teleporter.object_index == gm.constants.oTeleporter or Teleporter.object_index ==
                 gm.constants.oTeleporterEpic then
-                if KilledBoss and Teleporter.time == Teleporter.maxtime - 2 then
+                if KilledBoss and Teleporter.time >= Teleporter.maxtime - 2 then
                     Teleporter.time = Teleporter.time + 2
                 elseif Teleporter.time == Teleporter.maxtime - 1 then
                     Teleporter.time = Teleporter.time - 1
@@ -311,11 +350,13 @@ end)
 
 -- Eclipse3
 Callback.add("onStep", "OnyxEclipse3-onStep", function()
-    if EndFight and Director:alarm_get(1) == 1 then
-        local function DecreaseSpawnRate()
-            Director:alarm_set(1, Director:alarm_get(1) * 5)
+    if Director:alarm_get(1) == 1 then
+        if EndFight then
+            local function DecreaseSpawnRate()
+                Director:alarm_set(1, Director:alarm_get(1) * 5)
+            end
+            Alarm.create(DecreaseSpawnRate, 5)
         end
-        Alarm.create(DecreaseSpawnRate, 5)
     end
 end)
 
@@ -484,23 +525,22 @@ end)
 gm.pre_script_hook(gm.constants.fire_explosion, function(self, other, result, args)
     if gm.bool(AltEclipseArtifacts[7][9]) and self.team == 2 then
         if gm.bool(AltEclipseArtifacts[5][9]) then
-            args[9].value = args[9].value * 2
+            args[9].value = args[9].value + math.sqrt(args[9].value)
         else
-            args[9].value = args[9].value * 2
+            args[9].value = args[9].value + math.sqrt(args[9].value)
         end
     end
 end)
 -- add more bullet tracers
 gm.pre_script_hook(gm.constants.fire_bullet, function(self, other, result, args)
-    if gm.bool(AltEclipseArtifacts[7][9]) and self and self.team == 2 and not args[12] then
-        args[5].value = args[5].value * 0.5
+    if gm.bool(AltEclipseArtifacts[7][9]) and self and self.team == 2 and other ~= nil then
         if gm.bool(AltEclipseArtifacts[5][9]) then
-            self:fire_bullet(args[1].value, args[2].value, args[3].value - 7.5, args[4].value, args[5].value, args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value, true)
-            self:fire_bullet(args[1].value, args[2].value, args[3].value - 15, args[4].value, args[5].value, args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value, true)
-            self:fire_bullet(args[1].value, args[2].value, args[3].value - 20, args[4].value, args[5].value, args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value, true)
+            self:fire_bullet(args[1].value, args[2].value, args[3].value - 15, args[4].value, args[5].value,
+                args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value)
         else
-            self:fire_bullet(args[1].value, args[2].value, args[3].value - 7.5, args[4].value, args[5].value, args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value, true)
-            self:fire_bullet(args[1].value, args[2].value, args[3].value - 15, args[4].value, args[5].value, args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value, true)
+            args[5].value = args[5].value * 0.5
+            self:fire_bullet(args[1].value, args[2].value, args[3].value - 10, args[4].value, args[5].value,
+                args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value)
         end
     end
 end)
@@ -523,23 +563,13 @@ end)
 
 local function apply_Curse(player, damage)
     if gm.bool(EclipseArtifacts[8][9]) and player.team == 1 then
-        if gm.bool(EclipseArtifacts[7][9]) then
-            if damage / EnemyDamageBuffed > Curse.get_effective(player) * 0.05 then
-                Curse.apply(player, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.8 * 0.4 * damage / player.maxhp)
+        if damage > Curse.get_effective(player) * 0.05 then
+            Curse.apply(player, "OnyxEclipse-PermaDamage" .. CurseIndex,
+                math.floor((0.4 * damage / player.maxhp) * 100) / 100)
+            CurseIndex = CurseIndex + 1
+            if gm.bool(AltEclipseArtifacts[5][9]) then
+                Curse.apply(player, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.1 * damage / player.maxhp)
                 CurseIndex = CurseIndex + 1
-                if gm.bool(AltEclipseArtifacts[5][9]) then
-                    Curse.apply(player, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.8 * 0.1 * damage / player.maxhp)
-                    CurseIndex = CurseIndex + 1
-                end
-            end
-        else
-            if damage > Curse.get_effective(player) * 0.05 then
-                Curse.apply(player, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.4 * damage / player.maxhp)
-                CurseIndex = CurseIndex + 1
-                if gm.bool(AltEclipseArtifacts[5][9]) then
-                    Curse.apply(player, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.1 * damage / player.maxhp)
-                    CurseIndex = CurseIndex + 1
-                end
             end
         end
         if player.hp <= 0 then
@@ -547,10 +577,14 @@ local function apply_Curse(player, damage)
                 Curse.remove(player, "OnyxEclipse-PermaDamage" .. i)
             end
         end
+        log.warning("---")
+        log.warning(player.maxhp)
+        log.warning(player.shield)
+        log.warning(Curse.get_effective(player))
     end
 end
 
-gm.post_script_hook(gm.constants.damage_inflict_raw , function(self, other, result, args)
+gm.post_script_hook(gm.constants.damage_inflict_raw, function(self, other, result, args)
     apply_Curse(Instance.wrap(args[1].value), args[2].value.damage)
 end)
 
@@ -662,9 +696,9 @@ gm.post_code_execute("gml_Object_oInit_Draw_64", function(self, other)
     -- end
 end)
 
-gui.add_always_draw_imgui(function()
-    CursorX, CursorY = ImGui.GetMousePos()
-end)
+-- gui.add_always_draw_imgui(function()
+--     CursorX, CursorY = ImGui.GetMousePos()
+-- end)
 
 gm.pre_script_hook(gm.constants.prefs_set_hud_scale, function(self, other, result, args)
     SpriteScale = args[1].value

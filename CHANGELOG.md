@@ -1,3 +1,12 @@
+## 1.2.6
+* rebalanced e6 a bit (stronger at the beginning of a run and weaker at the end)
+* any eclipse level: added other boar types to boar beach
+
+## 1.2.5
+* potential fix to sound bug
+* potential fix to teleporter not finishing unless you exit the radius
+* changed alt e7 to be weaker for bigger attacks
+
 ## 1.2.4
 * Increased Tele radius a bit more
 * moved alt e7 (buffs all eclipse modifiers) to e5

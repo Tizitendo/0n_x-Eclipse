@@ -1,6 +1,7 @@
 log.info("Successfully loaded " .. _ENV["!guid"] .. ".")
 mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
 PATH = _ENV["!plugins_mod_folder_path"] .. "/Assets/"
+NAMESPACE = "OnyxEclipse"
 mods.on_all_mods_loaded(function()
     for k, v in pairs(mods) do
         if type(v) == "table" and v.tomlfuncs then
@@ -37,7 +38,7 @@ Initialize(function()
         Resources.sprite_load("Onyx", "Eclipse9_2x", PATH .. "Eclipse9_2x.png", 6, 20, 19))
     local EclipseDisplay = List.wrap(GM.variable_global_get("difficulty_display_list_eclipse"))
 
-    if Mod.find("Robomandoslab-StarstormReturns") ~= nil then
+    if Mod.find("RobomandosLab-StarstormReturns") or Mod.find("Robomandoslab-StarstormReturns") then
         EclipseDisplay:add(Wrap.wrap(eclipses[9]))
     end
 
@@ -95,7 +96,7 @@ Initialize(function()
     -- make eclipse 9 unlockable
     memory.dynamic_hook_mid("max_diff_level_fix", {"rdi"}, {"RValue*"}, 0,
         gm.get_script_function_address(106251):add(475), function(args)
-            if Mod.find("Robomandoslab-StarstormReturns") ~= nil then
+            if Mod.find("RobomandosLab-StarstormReturns") or Mod.find("Robomandoslab-StarstormReturns") then
                 args[1].value = 9.0
             end
         end)
