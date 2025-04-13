@@ -462,25 +462,44 @@ gm.pre_script_hook(gm.constants.interactable_init_cost, function(self, other, re
 end)
 -- Alt --
 local ChestRemoveCount = 0
+local ChestPacket = Packet.new()
 Callback.add("onGameStart", "OnyxAltEclipse5-onGameStart", function()
     ChestRemoveCount = 0
 end)
 local function EmptyChest(minute)
+    local player = Player.get_client()
     local Chests = Instance.find_all(Instance.chests)
-    math.randomseed(BaseSeed + minute)
+
+    local function compareDistance(a, b)
+        return a:distance_to_point(player.x, player.y) < b:distance_to_point(player.x, player.y)
+    end
+    table.sort(Chests, compareDistance)
+    
     while ChestRemoveCount > 0 and #Chests > 0 do
-        local RandomChest = math.random(1, #Chests)
-        if Chests[RandomChest].active <= 0 then
-            Chests[RandomChest].active = 1
-            Chests[RandomChest].open_delay = 0
+        if Chests[1].active <= 0 then
+            Chests[1].active = 1
+            Chests[1].open_delay = 0
             ChestRemoveCount = ChestRemoveCount - 1
         end
-        table.remove(Chests, RandomChest)
+        if gm._mod_net_isOnline() then
+            local msg = ChestPacket:message_begin()
+            msg:write_instance(Chests[1])
+            msg:send_to_all()
+        end
+        table.remove(Chests, 1)
     end
 end
+ChestPacket:onReceived(function(msg)
+    local chest = msg:read_instance()
+    chest.active = 1
+    chest.open_delay = 0
+end)
+
 Callback.add("onStageStart", "OnyxAltEclipse5-onStageStart", function()
     if gm.bool(AltEclipseArtifacts[6][9]) then
+        if gm._mod_net_isHost() then
         Alarm.create(EmptyChest, 1, 0)
+        end
     end
 end)
 Callback.add("onMinute", "OnyxAltEclipse5-onMinute", function(minute, second)
@@ -489,13 +508,15 @@ Callback.add("onMinute", "OnyxAltEclipse5-onMinute", function(minute, second)
             return;
         end
     end
-    if gm.bool(AltEclipseArtifacts[6][9]) and minute % 3 == 0 then
-        ChestRemoveCount = ChestRemoveCount + 1
+    if gm.bool(AltEclipseArtifacts[6][9]) and minute % 4 == 0 then
+        ChestRemoveCount = 1
         if gm.bool(AltEclipseArtifacts[5][9]) and math.random(1, 3) == 5 then
             math.randomseed(BaseSeed + minute)
             ChestRemoveCount = ChestRemoveCount + 1
         end
+        if gm._mod_net_isHost() then
         EmptyChest(minute)
+        end
     end
 end)
 
@@ -554,33 +575,38 @@ Callback.add("onStageStart", "OnyxEclipse8-onStageStart", function()
     -- reset ally curse when entering a new stage
     local allies = Instance.find_all(gm.constants.pFriend)
     for i, ally in ipairs(allies) do
-        for i = 0, CurseIndex do
-            Curse.remove(ally.value, "OnyxEclipse-PermaDamage" .. i)
+        local allydata = ally:get_data()
+        if not allydata.curseId then
+            allydata.curseId = CurseIndex
+            CurseIndex = CurseIndex + 1
         end
+        Curse.remove(ally.value, "OnyxEclipse-PermaDamage" .. allydata.curseId)
     end
-    CurseIndex = 0
 end)
 
 local function apply_Curse(player, damage)
     if gm.bool(EclipseArtifacts[8][9]) and player.team == 1 then
-        if damage > Curse.get_effective(player) * 0.05 then
-            Curse.apply(player, "OnyxEclipse-PermaDamage" .. CurseIndex,
-                math.floor((0.4 * damage / player.maxhp) * 100) / 100)
+        local playerdata = player:get_data()
+        if not playerdata.curseId then
+            playerdata.curseId = CurseIndex
             CurseIndex = CurseIndex + 1
-            if gm.bool(AltEclipseArtifacts[5][9]) then
-                Curse.apply(player, "OnyxEclipse-PermaDamage" .. CurseIndex, 0.1 * damage / player.maxhp)
-                CurseIndex = CurseIndex + 1
+        end
+
+        if damage > Curse.get_effective(player) * 0.05 then
+            damage = damage * 0.4
+            while damage >= Curse.get_effective(player) * 0.01 do
+                local currentCurse = 1 - (Curse.get_effective(player) / player.maxhp)
+                Curse.apply(player, "OnyxEclipse-PermaDamage" .. playerdata.curseId, currentCurse + (Curse.get_effective(player) * 0.01) / player.maxhp)
+                if gm.bool(AltEclipseArtifacts[5][9]) then
+                    Curse.apply(player, "OnyxEclipse-PermaDamage" .. playerdata.curseId, currentCurse + Curse.get_effective(player) * 0.012)
+                end
+                damage = damage - player.maxhp * 0.01
             end
         end
+
         if player.hp <= 0 then
-            for i = 0, CurseIndex do
-                Curse.remove(player, "OnyxEclipse-PermaDamage" .. i)
-            end
+            Curse.remove(player, "OnyxEclipse-PermaDamage" .. playerdata.curseId)
         end
-        log.warning("---")
-        log.warning(player.maxhp)
-        log.warning(player.shield)
-        log.warning(Curse.get_effective(player))
     end
 end
 

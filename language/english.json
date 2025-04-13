@@ -4,78 +4,6 @@
         "eclipse": {
             "name": "Eclipse",
             "description": "<#9ec3e9>\"Cast all hope aside. This planet rises against you.\"</c>\n\nStarts at baseline Monsoon difficulty"
-        },
-        "eclipse1": {
-            "name": "Eclipse (1)",
-            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>"
-        },
-        "eclipse2": {
-            "name": "Eclipse (2)",
-            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>"
-        },
-        "eclipse3": {
-            "name": "Eclipse (3)",
-            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>"
-        },
-        "eclipse4": {
-            "name": "Eclipse (4)",
-            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>"
-        },
-        "eclipse5": {
-            "name": "Eclipse (5)",
-            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>"
-        },
-        "eclipse6": {
-            "name": "Eclipse (6)",
-            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>\n( 6 )  Chest Prices: <r>+30%</c>"
-        },
-        "eclipse7": {
-            "name": "Eclipse (7)",
-            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>\n( 6 )  Chest Prices: <r>+30%</c>\n( 7 )  Enemy Cooldowns: <r>-40%</c>"
-        },
-        "eclipse8": {
-            "name": "Eclipse (8)",
-            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>\n( 6 )  Chest Prices: <r>+30%</c>\n( 7 )  Enemy Cooldowns: <r>-40%</c>\n( 8 )  Allies receive <r>permanent damage</c>"
-        },
-        "eclipse9": {
-            "name": "<#b53f80>Eclipse (9)",
-            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c>\n( 2 )  Teleporter Gains <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+15%</c>\n( 5 )  Ally Healing: <r>-50%</c>\n( 6 )  Chest Prices: <r>+30%</c>\n( 7 )  Enemy Cooldowns: <r>-40%</c>\n( 8 )  Allies receive <r>permanent damage</c>\n<#b53f80>( 9 )  Includes All SSR Typhoon Modifiers</c>"
-        },
-        "buffedeclipse1": {
-            "name": "Eclipse (1)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+650%</c>\n"
-        },
-        "buffedeclipse2": {
-            "name": "Eclipse (2)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+650%</c>\n( 2 )  Teleporter Gains Smaller <r>Radius</c>"
-        },
-        "buffedeclipse3": {
-            "name": "Eclipse (3)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+650%</c>\n( 2 )  Teleporter Gains Smaller <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>"
-        },
-        "buffedeclipse4": {
-            "name": "Eclipse (4)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+650%</c>\n( 2 )  Teleporter Gains Smaller <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>"
-        },
-        "buffedeclipse5": {
-            "name": "Eclipse (5)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+650%</c>\n( 2 )  Teleporter Gains Smaller <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+80%</c>"
-        },
-        "buffedeclipse6": {
-            "name": "Eclipse (6)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+650%</c>\n( 2 )  Teleporter Gains Smaller <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+80%</c>\n( 6 )  Ally Healing: <r>-60%</c>"
-        },
-        "buffedeclipse7": {
-            "name": "Eclipse (7)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+650%</c>\n( 2 )  Teleporter Gains Smaller <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+80%</c>\n( 6 )  Ally Healing: <r>-60%</c>\n( 7 )  Enemy Credit Scaling: <r>+30%</c>"
-        },
-        "buffedeclipse8": {
-            "name": "Eclipse (8)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+650%</c>\n( 2 )  Teleporter Gains Smaller <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+80%</c>\n( 6 )  Ally Healing: <r>-60%</c>\n( 7 )  Enemy Credit Scaling: <r>+30%</c>\n( 8 )  Allies receive more <r>permanent damage</c>"
-        },
-        "buffedeclipse9": {
-            "name": "<#b53f80>Eclipse (9)",
-            "description": "( 1 )  StageStart, Director Credits: <r>+650%</c>\n( 2 )  Teleporter Gains Smaller <r>Radius</c>\n( 3 )  Enemies Can Spawn <r>After TP Event</c>\n( 4 )  Enemy Speed: <r>+25%</c>\n( 5 )  Chest Prices: <r>+80%</c>\n( 6 )  Ally Healing: <r>-60%</c>\n( 7 )  Enemy Credit Scaling: <r>+30%</c>\n( 8 )  Allies receive more <r>permanent damage</c>\n<#b53f80>( 9 )  Includes All SSR Typhoon Modifiers</c>"
         }
     },
     "artifact": {
@@ -85,11 +13,11 @@
         },
         "eclipse1": {
             "name": "Eclipse (1)",
-            "description": "( 1 )  StageStart, Enemy Credits: <r>x2 for 60s</c></c>\n"
+            "description": "StageStart, Enemy Credits: <r>x2 for 60s</c></c>"
         },
         "alteclipse1": {
             "name": "Eclipse (1) Alt",
-            "description": "Ally Starting Health: <r>-50%</c>\n"
+            "description": "Ally Starting Health: <r>-50%</c>"
         },
         "eclipse2": {
             "name": "Eclipse (2)",
@@ -101,7 +29,7 @@
         },
         "eclipse4": {
             "name": "Eclipse (4)",
-            "description": "Enemy Speed: <r>+20%</c>"
+            "description": "Enemy Speed: <r>+15%</c>"
         },
         "eclipse5": {
             "name": "Eclipse (5)",
@@ -117,7 +45,7 @@
         },
         "alteclipse6": {
             "name": "Eclipse (6) Alt",
-            "description": "Every 3 Minutes <r>Empty 1 Random Chest</c>"
+            "description": "Every 4 Minutes <r>Empty The Closest Chest</c>"
         },
         "eclipse7": {
             "name": "Eclipse (7)",
@@ -137,7 +65,7 @@
         },
         "eclipse9": {
             "name": "<#b53f80>Eclipse (9)",
-            "description": "( 9 )  Includes All SSR Typhoon Modifiers</c>"
+            "description": "Includes All SSR Typhoon Modifiers</c>"
         }
     }
 }

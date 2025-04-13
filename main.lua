@@ -29,6 +29,15 @@ Initialize(function()
     for i = 1, 9 do
         eclipses[i] = Difficulty.find("ror", "eclipse" .. tostring(i))
         eclipses[i]:set_sound(Resources.sfx_load("Onyx", "EclipseSfx", PATH .. "eclipse.ogg"))
+        eclipses[i].token_name = Language.translate_token("artifact.eclipse"..i..".name")
+        eclipses[i].token_description = "( 1 )  "
+        for o = 1, i do
+            eclipses[i].token_description = eclipses[i].token_description..Language.translate_token("artifact.eclipse"..o..".description")
+
+            if i ~= o then
+                eclipses[i].token_description = eclipses[i].token_description.."\n( "..(o+1).." )  "
+            end
+        end
     end
     -- add secret eclipse 9
     eclipses[9]:set_scaling(0.2, 4.0, 1.7)
@@ -64,6 +73,8 @@ Initialize(function()
     AlternativeEclipses[7] = Artifact.new("OnyxAltEclipse", "alteclipse7")
     AlternativeEclipses[7]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse7", PATH .. "ArtiAltEclipse7.png",
         3, 11, 12), 1)
+
+    
 
     gm.post_script_hook(gm.constants.difficulty_eclipse_get_max_available_level_for_survivor,
         function(self, other, result, args)
