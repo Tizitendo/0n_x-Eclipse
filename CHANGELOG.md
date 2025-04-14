@@ -1,6 +1,7 @@
 ## 1.2.7
+* made e1 slightly weaker
 * changed curse to be more accurate to ror2
-* changed alt e6 (now always opens the closest chest + time increased to 4 minutes)
+* changed alt e6 (now always opens the closest chest + time increased to 5 minutes)
 
 ## 1.2.6
 * rebalanced e6 a bit (stronger at the beginning of a run and weaker at the end)

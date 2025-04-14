@@ -206,7 +206,7 @@ end)
 -- add director credits
 Callback.add("onSecond", "OnyxEclipse1-onSecond", function(minute, second)
     if ExtraCreditsEnabled > 0 then
-        Director.points = Director.points + (6 + 1.5 * minute)
+        Director.points = Director.points + (6 + 1.4 * minute)
         ExtraCreditsEnabled = ExtraCreditsEnabled - 1
     end
 
@@ -449,12 +449,18 @@ gm.pre_script_hook(gm.constants.actor_heal_raw, function(self, other, result, ar
     end
 end)
 
+-- Alt
+gm.post_script_hook(gm.constants.draw_button, function(self, other, result, args)
+    -- Helper.log_hook(self, other, result, args)
+    -- log.warning(args[1].value.selected)
+end)
+
 ---- eclipse 6 ----
 -- increase chest prices
 gm.pre_script_hook(gm.constants.interactable_init_cost, function(self, other, result, args)
     if args[2].value == 0 and gm.bool(EclipseArtifacts[6][9]) then
         if gm.bool(AltEclipseArtifacts[5][9]) then
-            args[3].value = args[3].value * 1.8
+            args[3].value = args[3].value * 1.4
         else
             args[3].value = args[3].value * PriceIncrease
         end
@@ -508,15 +514,20 @@ Callback.add("onMinute", "OnyxAltEclipse5-onMinute", function(minute, second)
             return;
         end
     end
-    if gm.bool(AltEclipseArtifacts[6][9]) and minute % 4 == 0 then
-        ChestRemoveCount = 1
-        if gm.bool(AltEclipseArtifacts[5][9]) and math.random(1, 3) == 5 then
-            math.randomseed(BaseSeed + minute)
-            ChestRemoveCount = ChestRemoveCount + 1
+    if gm.bool(AltEclipseArtifacts[6][9]) then
+        if gm.bool(AltEclipseArtifacts[5][9]) then
+            if minute % 4 == 0 then
+                ChestRemoveCount = 1
+            end
+        else
+            if minute % 5 == 0 then
+                ChestRemoveCount = 1
+            end
         end
-        if gm._mod_net_isHost() then
+    end
+    
+    if gm._mod_net_isHost() then
         EmptyChest(minute)
-        end
     end
 end)
 
@@ -576,11 +587,11 @@ Callback.add("onStageStart", "OnyxEclipse8-onStageStart", function()
     local allies = Instance.find_all(gm.constants.pFriend)
     for i, ally in ipairs(allies) do
         local allydata = ally:get_data()
-        if not allydata.curseId then
-            allydata.curseId = CurseIndex
-            CurseIndex = CurseIndex + 1
+        if allydata.curseId then
+            allydata.curseStacks = 0
+            Curse.remove(ally.value, "OnyxEclipse-PermaDamage" .. allydata.curseId)
         end
-        Curse.remove(ally.value, "OnyxEclipse-PermaDamage" .. allydata.curseId)
+        CurseIndex = 0
     end
 end)
 
@@ -589,22 +600,20 @@ local function apply_Curse(player, damage)
         local playerdata = player:get_data()
         if not playerdata.curseId then
             playerdata.curseId = CurseIndex
+            playerdata.curseStacks = 0
             CurseIndex = CurseIndex + 1
         end
 
         if damage > Curse.get_effective(player) * 0.05 then
-            damage = damage * 0.4
-            while damage >= Curse.get_effective(player) * 0.01 do
-                local currentCurse = 1 - (Curse.get_effective(player) / player.maxhp)
-                Curse.apply(player, "OnyxEclipse-PermaDamage" .. playerdata.curseId, currentCurse + (Curse.get_effective(player) * 0.01) / player.maxhp)
-                if gm.bool(AltEclipseArtifacts[5][9]) then
-                    Curse.apply(player, "OnyxEclipse-PermaDamage" .. playerdata.curseId, currentCurse + Curse.get_effective(player) * 0.012)
-                end
-                damage = damage - player.maxhp * 0.01
+            playerdata.curseStacks = playerdata.curseStacks + math.floor(40 * damage / Curse.get_effective(player))
+            if gm.bool(AltEclipseArtifacts[5][9]) then
+                playerdata.curseStacks = playerdata.curseStacks + math.floor(10 * damage / Curse.get_effective(player))
             end
+            Curse.apply(player, "OnyxEclipse-PermaDamage" .. playerdata.curseId, 1 - 1/(1 + 0.01*playerdata.curseStacks))
         end
 
         if player.hp <= 0 then
+            playerdata.curseStacks = 0
             Curse.remove(player, "OnyxEclipse-PermaDamage" .. playerdata.curseId)
         end
     end
