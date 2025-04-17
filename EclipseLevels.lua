@@ -31,10 +31,8 @@ local Interactables = {gm.constants.oChest1, gm.constants.oChest2, gm.constants.
 -- Parameters
 local TeleColor = 190540540
 local TeleRadius = 700
-local BuffedTeleRadius = 500
+local BuffedTeleRadius = 600
 local PriceIncrease = 1.3
-local EnemyDamage = 1.25
-local EnemyDamageBuffed = 1.3
 local EnemyMoveSpeed = 1.15
 local BuffedEnemyMoveSpeed = 1.2
 local EnemyAttackSpeed = 1.15
@@ -163,6 +161,7 @@ Callback.add("onStageStart", "OnyxEclipse1-onStageStart", function()
     Teleporter = nil
 
     if gm.bool(EclipseArtifacts[1][9]) then
+        Director.points = Director.points + (40 + 5 * Director.minute_current)
         if gm.bool(AltEclipseArtifacts[5][9]) then
             ExtraCreditsEnabled = 80
         else
@@ -206,7 +205,7 @@ end)
 -- add director credits
 Callback.add("onSecond", "OnyxEclipse1-onSecond", function(minute, second)
     if ExtraCreditsEnabled > 0 then
-        Director.points = Director.points + (6 + 1.4 * minute)
+        Director.points = Director.points + (4 + 1.3 * minute)
         ExtraCreditsEnabled = ExtraCreditsEnabled - 1
     end
 
@@ -455,10 +454,36 @@ gm.post_script_hook(gm.constants.draw_button, function(self, other, result, args
     -- log.warning(args[1].value.selected)
 end)
 
+-- gm.post_script_hook(gm.constants.draw_sprite_stretched, function(self, other, result, args)
+--     Helper.log_hook(self, other, result, args)
+--     gm.draw_sprite_ext(args[1].value, args[2].value, args[3].value, args[4].value + 10, args[5].value, args[6].value, 0, Color.WHITE, 1)
+-- end)
+
+gm.post_script_hook(gm.constants.ui_button_sprite, function(self, other, result, args)
+    -- Helper.log_hook(self, other, result, args)
+    -- log.warning("maybe")
+    -- if gm.bool(AltEclipseArtifacts[5][9]) then
+    --     log.warning("yes")
+    -- end
+end)
+
+gm.post_script_hook(gm.constants.draw_vertex_texture, function(self, other, result, args)
+    -- Helper.log_hook(self, other, result, args)
+    
+end)
+
+Callback.add(Callback.TYPE.onDraw, "qwesdfcvftz", function()
+    -- log.warning("maybe")
+    -- if gm.bool(AltEclipseArtifacts[5][9]) then
+    --     log.warning("yes")
+    -- end
+end)
+
 ---- eclipse 6 ----
 -- increase chest prices
 gm.pre_script_hook(gm.constants.interactable_init_cost, function(self, other, result, args)
-    if args[2].value == 0 and gm.bool(EclipseArtifacts[6][9]) then
+    if args[2].value == 0 and gm.bool(EclipseArtifacts[6][9]) and 
+    (gm.object_get_parent(args[1].value.object_index) == gm.constants.pInteractableChest or args[1].value.object_index == gm.constantsoChest4) then
         if gm.bool(AltEclipseArtifacts[5][9]) then
             args[3].value = args[3].value * 1.4
         else
@@ -534,7 +559,7 @@ end)
 ---- eclipse 7 ----
 gm.post_script_hook(gm.constants.recalculate_stats, function(self, other, result, args)
     -- increase enemy attack speed
-    if self.team == 2 and gm.bool(EclipseArtifacts[7][9]) then
+    if self.team == 2 and gm.bool(EclipseArtifacts[7][9]) and self.object_index ~= gm.constants.oImp then
         if gm.bool(AltEclipseArtifacts[5][9]) then
             local actor = Instance.wrap(self)
             local skills = {actor:get_active_skill(0), actor:get_active_skill(1), actor:get_active_skill(2),
@@ -555,7 +580,7 @@ end)
 ---- Alt ----
 -- increase explosion height
 gm.pre_script_hook(gm.constants.fire_explosion, function(self, other, result, args)
-    if gm.bool(AltEclipseArtifacts[7][9]) and self.team == 2 then
+    if gm.bool(AltEclipseArtifacts[7][9]) and self.team == 2 and self.object_index ~= gm.constants.oSpitter then
         if gm.bool(AltEclipseArtifacts[5][9]) then
             args[9].value = args[9].value + math.sqrt(args[9].value)
         else
@@ -565,7 +590,7 @@ gm.pre_script_hook(gm.constants.fire_explosion, function(self, other, result, ar
 end)
 -- add more bullet tracers
 gm.pre_script_hook(gm.constants.fire_bullet, function(self, other, result, args)
-    if gm.bool(AltEclipseArtifacts[7][9]) and self and self.team == 2 and other ~= nil then
+    if gm.bool(AltEclipseArtifacts[7][9]) and self and self.team == 2 and other ~= nil and self.object_index ~= gm.constants.oSpitter then
         if gm.bool(AltEclipseArtifacts[5][9]) then
             self:fire_bullet(args[1].value, args[2].value, args[3].value - 15, args[4].value, args[5].value,
                 args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value)
@@ -1001,9 +1026,12 @@ end)
 -- Origin
 local timeMinute = 0
 Callback.add("onMinute", "OnyxArtifactOrigin-onMinute", function(minute, second)
-    timeMinute = minute
+    if NumArtifacts == 0 then
+        timeMinute = 0
+    end
     for i = 1, NumArtifacts do
         if currentArtifact[i][2] == "origin" and minute % 5 == 0 then
+            timeMinute = minute
             local Invasion = Object.find("ror", "ImpPortal")
             for i = 1, 1 + minute / 10 do
                 Invasion:create(player[1].x, player[1].y)

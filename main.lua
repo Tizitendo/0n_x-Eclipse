@@ -29,13 +29,14 @@ Initialize(function()
     for i = 1, 9 do
         eclipses[i] = Difficulty.find("ror", "eclipse" .. tostring(i))
         eclipses[i]:set_sound(Resources.sfx_load("Onyx", "EclipseSfx", PATH .. "eclipse.ogg"))
-        eclipses[i].token_name = Language.translate_token("artifact.eclipse"..i..".name")
+        eclipses[i].token_name = Language.translate_token("artifact.eclipse" .. i .. ".name")
         eclipses[i].token_description = "( 1 )  "
         for o = 1, i do
-            eclipses[i].token_description = eclipses[i].token_description..Language.translate_token("artifact.eclipse"..o..".description")
+            eclipses[i].token_description = eclipses[i].token_description ..
+                                                Language.translate_token("artifact.eclipse" .. o .. ".description")
 
             if i ~= o then
-                eclipses[i].token_description = eclipses[i].token_description.."\n( "..(o+1).." )  "
+                eclipses[i].token_description = eclipses[i].token_description .. "\n( " .. (o + 1) .. " )  "
             end
         end
     end
@@ -47,17 +48,12 @@ Initialize(function()
         Resources.sprite_load("Onyx", "Eclipse9_2x", PATH .. "Eclipse9_2x.png", 6, 20, 19))
     local EclipseDisplay = List.wrap(GM.variable_global_get("difficulty_display_list_eclipse"))
 
-    if Mod.find("RobomandosLab-StarstormReturns") or Mod.find("Robomandoslab-StarstormReturns") then
-        EclipseDisplay:add(Wrap.wrap(eclipses[9]))
-    end
-
     for i = 1, 9 do
         EclipseArtifacts[i] = Artifact.new("OnyxEclipse", "eclipse" .. i)
         EclipseArtifacts[i]:set_sprites(Resources.sprite_load("Onyx", "ArtiEclipse" .. i,
             PATH .. "ArtiEclipse" .. i .. ".png", 3, 11, 12), 1)
         table.insert(AlternativeEclipses, 0)
     end
-    -- table.insert(AlternativeEclipses, Artifact.new("OnyxAltEclipse", "alteclipse6"))
     AlternativeEclipses[8] = Artifact.new("OnyxAltEclipse", "alteclipse8")
     AlternativeEclipses[8]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse8", PATH .. "ArtiAltEclipse8.png",
         3, 11, 12), 1)
@@ -73,8 +69,6 @@ Initialize(function()
     AlternativeEclipses[7] = Artifact.new("OnyxAltEclipse", "alteclipse7")
     AlternativeEclipses[7]:set_sprites(Resources.sprite_load("Onyx", "ArtiAltEclipse7", PATH .. "ArtiAltEclipse7.png",
         3, 11, 12), 1)
-
-    
 
     gm.post_script_hook(gm.constants.difficulty_eclipse_get_max_available_level_for_survivor,
         function(self, other, result, args)
@@ -107,7 +101,7 @@ Initialize(function()
     -- make eclipse 9 unlockable
     memory.dynamic_hook_mid("max_diff_level_fix", {"rdi"}, {"RValue*"}, 0,
         gm.get_script_function_address(106251):add(475), function(args)
-            if Mod.find("RobomandosLab-StarstormReturns") or Mod.find("Robomandoslab-StarstormReturns") then
+            if Difficulty.find("ssr", "typhoon") then
                 args[1].value = 9.0
             end
         end)
@@ -146,6 +140,10 @@ Initialize(function()
     gm.pre_script_hook(gm.constants.game_lobby_start, function(self, other, result, args)
         local DifficultyDisplay = List.wrap(GM.variable_global_get("difficulty_display_list"))
 
+        if Difficulty.find("ssr", "typhoon") and EclipseDisplay[#EclipseDisplay] ~= Wrap.wrap(eclipses[9]) then
+            EclipseDisplay:add(Wrap.wrap(eclipses[9]))
+        end
+
         for i = #DifficultyDisplay, 1, -1 do
             if DifficultyDisplay[i] == Wrap.wrap(Eclipse) or DifficultyDisplay[i] == Wrap.wrap(eclipses[9]) then
                 DifficultyDisplay:delete(i - 1)
@@ -159,14 +157,20 @@ Initialize(function()
         end
 
         local BaseArtifacts = {}
-        for k, v in ipairs(Global.class_artifact) do
-            if v ~= 0 and v[2] ~= 0 and v[1] ~= "OnyxEclipse" then
-                table.insert(BaseArtifacts, v)
+            for k, v in ipairs(Global.class_artifact) do
+                if v ~= 0 and v[2] ~= 0 and v[1] ~= "OnyxEclipse" and v[1] ~= "OnyxAltEclipse" then
+                    table.insert(BaseArtifacts, k - 1)
+                end
             end
-        end
 
-        for i = 1, #BaseArtifacts do
-            ArtifactDisplay:add(Wrap.wrap(Artifact.find(BaseArtifacts[i][1], BaseArtifacts[i][2])))
+            for i = 1, #BaseArtifacts do
+                ArtifactDisplay:add(BaseArtifacts[i])
+            end
+
+        if self and self.class_ind == nil then
+            
+        else
+            DifficultyDisplay:add(Wrap.wrap(Eclipse))
         end
 
         if (self and self.class_ind == nil) or params.ShowArtifacts then
@@ -178,12 +182,6 @@ Initialize(function()
                     ArtifactDisplay:add(Wrap.wrap(AlternativeEclipses[i]))
                 end
             end
-        end
-
-        if self and self.class_ind == nil then
-
-        else
-            DifficultyDisplay:add(Wrap.wrap(Eclipse))
         end
 
         local function WaitForInit()

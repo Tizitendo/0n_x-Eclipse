@@ -1,3 +1,8 @@
+## 1.2.8
+* fixed modded artifacts not appearing
+* changed e6 to only affect chests
+* trying out a change to e1 to favor bosses a bit more
+
 ## 1.2.7
 * made e1 slightly weaker
 * changed curse to be more accurate to ror2

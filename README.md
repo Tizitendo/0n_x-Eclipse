@@ -15,7 +15,7 @@
 Added alternative Eclipse Levels
 - (1) Ally Starting Health: -50%
 - (5) Buffs All Eclipse Modifiers
-- (6) Every 3 Minutes Empty 1 Random Chest
+- (6) Every 5 Minutes Empty The Closest Chest
 - (7) Enemy Attack height: +50%
 - (8) Every Stage, Activate a Random Artifact (Get +1 Artifact every 5 stages)
 
