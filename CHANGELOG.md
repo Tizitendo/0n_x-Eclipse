@@ -1,3 +1,10 @@
+## 1.2.9
+* enabling alt eclipse levels now replaces the default eclipse levels in the difficulty description
+* e5 heal reduction reduced to -40%
+* fixed e6 not affecting shops
+* reworked alt e5, now shows changes in the difficulty description
+* e8 now gives curse stacks for 30% damage taken instead of the 40% in ror2
+
 ## 1.2.8
 * fixed modded artifacts not appearing
 * changed e6 to only affect chests

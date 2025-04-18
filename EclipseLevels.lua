@@ -19,6 +19,7 @@ local BaseArtifacts = {}
 local EclipseArtifacts = {}
 local AltEclipseArtifacts = {}
 local ActiveEclipse = false
+local artiSelected = {}
 local UpdatePacket = Packet.new()
 local Interactables = {gm.constants.oChest1, gm.constants.oChest2, gm.constants.oChest5, gm.constants.oChestHealing1,
                        gm.constants.oChestDamage1, gm.constants.oChestUtility1, gm.constants.oChestHealing2,
@@ -30,9 +31,11 @@ local Interactables = {gm.constants.oChest1, gm.constants.oChest2, gm.constants.
 
 -- Parameters
 local TeleColor = 190540540
+local BuffedTeleColor = Color.from_hex(0xb53f80)
 local TeleRadius = 700
-local BuffedTeleRadius = 600
+local BuffedTeleRadius = 350
 local PriceIncrease = 1.3
+local BuffedPriceIncrease = 1.4
 local EnemyMoveSpeed = 1.15
 local BuffedEnemyMoveSpeed = 1.2
 local EnemyAttackSpeed = 1.15
@@ -40,6 +43,7 @@ local BuffedEnemyAttackSpeed = 1.2
 local EnemyCooldowns = 0.6
 local BuffedEnemyCooldowns = 0.5
 local DefaultSacrificeDropChance = 15
+local Healreduction = 0.6
 local BaseSeed = os.time()
 
 for i = 1, 9 do
@@ -68,6 +72,9 @@ bigboar_card.can_be_blighted = false
 local beach = Stage.find("ror-boarBeach")
 
 Callback.add("onGameStart", "OnyxEclipseGen-onGameStart", function()
+    for o = 1, 9 do
+        artiSelected[o] = false
+    end
     ExtraCreditsEnabled = 0
     player = {}
     Director = GM._mod_game_getDirector()
@@ -161,19 +168,18 @@ Callback.add("onStageStart", "OnyxEclipse1-onStageStart", function()
     Teleporter = nil
 
     if gm.bool(EclipseArtifacts[1][9]) then
-        Director.points = Director.points + (40 + 5 * Director.minute_current)
+        Director.points = Director.points + (40 + 10 * Director.minute_current)
         if gm.bool(AltEclipseArtifacts[5][9]) then
-            ExtraCreditsEnabled = 80
-        else
-            ExtraCreditsEnabled = 60
+            Director.points = Director.points + (40 + 10 * Director.minute_current)
         end
+        ExtraCreditsEnabled = 60
     end
 
     if gm.bool(AltEclipseArtifacts[1][9]) then
         local allies = Instance.find_all(gm.constants.pFriend)
         for i = 1, #allies do
             if gm.bool(AltEclipseArtifacts[5][9]) then
-                allies[i].hp = allies[i].hp * 0.35
+                allies[i].hp = allies[i].hp * 0.4
             else
                 allies[i].hp = allies[i].hp * 0.5
             end
@@ -184,7 +190,7 @@ gm.post_script_hook(gm.constants.instance_create_depth, function(self, other, re
     if gm.bool(AltEclipseArtifacts[1][9]) and result.value ~= nil and result.value.hp ~= nil and result.value.team == 1 and
         result.value.object_index ~= gm.constants.oP then
         if gm.bool(AltEclipseArtifacts[5][9]) then
-            result.value.hp = result.value.hp * 0.35
+            result.value.hp = result.value.hp * 0.4
         else
             result.value.hp = result.value.hp * 0.5
         end
@@ -194,11 +200,7 @@ end)
 -- doesn't use drop_gold_and_exp to keep barrel gold the same
 gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
     if ExtraCreditsEnabled > 0 then
-        if gm.bool(AltEclipseArtifacts[5][9]) then
-            self.exp_worth = self.exp_worth * 0.4
-        else
-            self.exp_worth = self.exp_worth * 0.5
-        end
+        self.exp_worth = self.exp_worth * 0.5
     end
 end)
 
@@ -217,7 +219,6 @@ Callback.add("onSecond", "OnyxEclipse1-onSecond", function(minute, second)
 end)
 
 ---- Eclipse 2 ----
-local trueTeleRadius = TeleRadius
 Callback.add("onStep", "OnyxEclipse2-onStep", function()
     -- get number of alive players
     alivePlayers = 0
@@ -225,12 +226,6 @@ Callback.add("onStep", "OnyxEclipse2-onStep", function()
         if not player[i].dead then
             alivePlayers = alivePlayers + 1
         end
-    end
-
-    if gm.bool(AltEclipseArtifacts[5][9]) then
-        trueTeleRadius = BuffedTeleRadius
-    else
-        trueTeleRadius = TeleRadius
     end
 
     if gm.bool(EclipseArtifacts[2][9]) and Teleporter then
@@ -241,8 +236,17 @@ Callback.add("onStep", "OnyxEclipse2-onStep", function()
                     local DistanceX, DistanceY
                     DistanceX = player[i].x - Teleporter.x
                     DistanceY = player[i].y - Teleporter.y
-                    if math.sqrt(DistanceX * DistanceX + DistanceY * DistanceY) >= trueTeleRadius then
+
+                    if math.sqrt(DistanceX * DistanceX + DistanceY * DistanceY) >= TeleRadius then
                         Teleporter.time = Teleporter.time - (1 / alivePlayers)
+                    else
+                        if AltEclipseArtifacts[5][9] then
+                            if math.sqrt(DistanceX * DistanceX + DistanceY * DistanceY) >= BuffedTeleRadius then
+                                Teleporter.time = Teleporter.time - (1 / alivePlayers) * 0.3
+                            else
+                                Teleporter.time = Teleporter.time + (1 / alivePlayers) * 0.3
+                            end
+                        end
                     end
                 end
             end
@@ -250,9 +254,9 @@ Callback.add("onStep", "OnyxEclipse2-onStep", function()
             -- don't let teleporter finish unless boss is killed
             if Teleporter.object_index == gm.constants.oTeleporter or Teleporter.object_index ==
                 gm.constants.oTeleporterEpic then
-                if KilledBoss and Teleporter.time >= Teleporter.maxtime - 2 then
+                if KilledBoss and Teleporter.time >= Teleporter.maxtime - 3 then
                     Teleporter.time = Teleporter.time + 2
-                elseif Teleporter.time == Teleporter.maxtime - 1 then
+                elseif Teleporter.time >= Teleporter.maxtime - 2 then
                     Teleporter.time = Teleporter.time - 1
                 end
             end
@@ -265,7 +269,7 @@ Callback.add("onStep", "OnyxEclipse2-onStep", function()
                     if v.active == 0 then
                         local DistanceX = v.x - Teleporter.x
                         local DistanceY = v.y - Teleporter.y
-                        if math.sqrt(DistanceX ^ 2 + DistanceY ^ 2) >= trueTeleRadius then
+                        if math.sqrt(DistanceX ^ 2 + DistanceY ^ 2) >= TeleRadius then
                             v.active = -1
                         end
                     end
@@ -303,12 +307,18 @@ Callback.add("onDraw", "OnyxEclipse2-onDraw", function()
             else
                 RadiusMul = 1
             end
-            gm.draw_circle_colour(Teleporter.x, Teleporter.y, trueTeleRadius * RadiusMul, TeleColor, TeleColor, true)
+            gm.draw_circle_colour(Teleporter.x, Teleporter.y, TeleRadius * RadiusMul, TeleColor, TeleColor, true)
+            if AltEclipseArtifacts[5][9] then
+                gm.draw_circle_colour(Teleporter.x, Teleporter.y, BuffedTeleRadius * RadiusMul, BuffedTeleColor, BuffedTeleColor, true)
+            end
         end
         if Teleporter.active ~= 1 and RadiusMul >= 1 and RadiusMul < 1.1 then
             RadiusMul = RadiusMul * 1.01
             gm.draw_set_alpha(0.8 - math.fmod(RadiusMul, 0.1))
-            gm.draw_circle_colour(Teleporter.x, Teleporter.y, trueTeleRadius * RadiusMul, TeleColor, TeleColor, true)
+            gm.draw_circle_colour(Teleporter.x, Teleporter.y, TeleRadius * RadiusMul, TeleColor, TeleColor, true)
+            if AltEclipseArtifacts[5][9] then
+                gm.draw_circle_colour(Teleporter.x, Teleporter.y, BuffedTeleRadius * RadiusMul, BuffedTeleColor, BuffedTeleColor, true)
+            end
         end
         if RadiusMul == 1 then
             frame = frame + 1
@@ -321,8 +331,10 @@ Callback.add("onDraw", "OnyxEclipse2-onDraw", function()
                 if Tele_circles[i] then
                     gm.draw_set_alpha(0.9 - ((Tele_circles[i] - 0.95) / 0.05) ^ 2)
                     Tele_circles[i] = Tele_circles[i] * 1.001
-                    gm.draw_circle_colour(Teleporter.x, Teleporter.y, trueTeleRadius * Tele_circles[i], TeleColor,
-                        TeleColor, true)
+                    gm.draw_circle_colour(Teleporter.x, Teleporter.y, TeleRadius * Tele_circles[i], TeleColor, TeleColor, true)
+                    if AltEclipseArtifacts[5][9] then
+                        gm.draw_circle_colour(Teleporter.x, Teleporter.y, BuffedTeleRadius * Tele_circles[i], BuffedTeleColor, BuffedTeleColor, true)
+                    end
                     if Tele_circles[i] >= 1 then
                         table.remove(Tele_circles, i)
                     end
@@ -339,8 +351,7 @@ gm.pre_script_hook(gm.constants.enemy_stats_init, function(self, other, result, 
         for i = 1, #player do
             DistanceX = player[i].x - Teleporter.x
             DistanceY = player[i].y - Teleporter.y
-            if Director.teleporter_active == 1 and math.sqrt(DistanceX * DistanceX + DistanceY * DistanceY) >=
-                trueTeleRadius then
+            if Director.teleporter_active == 1 and math.sqrt(DistanceX * DistanceX + DistanceY * DistanceY) >= TeleRadius then
                 self.exp_worth = self.exp_worth * (1 - 0.5 / alivePlayers)
             end
         end
@@ -370,9 +381,6 @@ Callback.add("onSecond", "OnyxEclipse3-onSecond", function(minute, second)
             msg:write_byte(FinishedTele)
             msg:send_to_all()
         end
-    end
-    if gm.bool(AltEclipseArtifacts[5][9]) and FinishedTele then
-        Director.points = Director.points + 2
     end
 end)
 
@@ -441,51 +449,71 @@ end)
 gm.pre_script_hook(gm.constants.actor_heal_raw, function(self, other, result, args)
     if gm.bool(EclipseArtifacts[5][9]) and args[1].value.team == 1 then
         if gm.bool(AltEclipseArtifacts[5][9]) then
-            args[2].value = args[2].value * 0.4
+            args[2].value = args[2].value * Healreduction
         else
-            args[2].value = args[2].value * 0.5
+            args[2].value = args[2].value * Healreduction
         end
     end
 end)
 
 -- Alt
-gm.post_script_hook(gm.constants.draw_button, function(self, other, result, args)
-    -- Helper.log_hook(self, other, result, args)
-    -- log.warning(args[1].value.selected)
-end)
+local AltArtiIds = {}
+for i, artifact in ipairs(Global.class_artifact) do
+    for o = 1, 9 do
+        artiSelected[o] = false
+        if artifact ~= 0 and artifact[2] ~= 0 and AltEclipseArtifacts[o] and  artifact[6] == AltEclipseArtifacts[o][6] then
+            AltArtiIds[o] = i - 1
+        end
+    end
+end
+gm.post_script_hook(gm.constants.anon_gml_Object_oSelectMenu_Create_0_200742116_gml_Object_oSelectMenu_Create_0, function(self, other, result, args)
+    for i = 1, 9 do
+        if args[1].value == AltArtiIds[i] then
+            artiSelected[i] = not artiSelected[i]
+        end
+    end
 
--- gm.post_script_hook(gm.constants.draw_sprite_stretched, function(self, other, result, args)
---     Helper.log_hook(self, other, result, args)
---     gm.draw_sprite_ext(args[1].value, args[2].value, args[3].value, args[4].value + 10, args[5].value, args[6].value, 0, Color.WHITE, 1)
--- end)
+    if artiSelected[5] then
+        self.customize_sections[1].height = 200
+        for i = 1, 9 do
+            if artiSelected[i] then
+                EclipseArtifacts[i][5] = "artifactbuffed.alteclipse"..i..".description"
+            else
+                EclipseArtifacts[i][5] = "artifactbuffed.eclipse"..i..".description"
+            end
+        end
+    else
+        for i = 1, 9 do
+            if artiSelected[i] then
+                EclipseArtifacts[i][5] = "artifact.alteclipse"..i..".description"
+            else
+                EclipseArtifacts[i][5] = "artifact.eclipse"..i..".description"
+            end
+        end
+    end
 
-gm.post_script_hook(gm.constants.ui_button_sprite, function(self, other, result, args)
-    -- Helper.log_hook(self, other, result, args)
-    -- log.warning("maybe")
-    -- if gm.bool(AltEclipseArtifacts[5][9]) then
-    --     log.warning("yes")
-    -- end
-end)
+    for i = 1, 9 do
+        eclipses[i].token_description = "( 1 )  "
+        for o = 1, i do
+            eclipses[i].token_description = eclipses[i].token_description ..
+                                                Language.translate_token(EclipseArtifacts[o][5])
 
-gm.post_script_hook(gm.constants.draw_vertex_texture, function(self, other, result, args)
-    -- Helper.log_hook(self, other, result, args)
-    
-end)
-
-Callback.add(Callback.TYPE.onDraw, "qwesdfcvftz", function()
-    -- log.warning("maybe")
-    -- if gm.bool(AltEclipseArtifacts[5][9]) then
-    --     log.warning("yes")
-    -- end
+            if i ~= o then
+                eclipses[i].token_description = eclipses[i].token_description .. "\n( " .. (o + 1) .. " )  "
+            end
+        end
+    end
 end)
 
 ---- eclipse 6 ----
 -- increase chest prices
 gm.pre_script_hook(gm.constants.interactable_init_cost, function(self, other, result, args)
-    if args[2].value == 0 and gm.bool(EclipseArtifacts[6][9]) and 
-    (gm.object_get_parent(args[1].value.object_index) == gm.constants.pInteractableChest or args[1].value.object_index == gm.constantsoChest4) then
+    if args[2].value == 0 and gm.bool(EclipseArtifacts[6][9]) and type(args[1].value) ~= "number" and
+    (gm.object_get_parent(args[1].value.object_index) == gm.constants.pInteractableChest or 
+    args[1].value.object_index == gm.constantsoChest4 or 
+    gm.object_get_parent(args[1].value.object_index) == gm.constants.pInteractableTriShop) then
         if gm.bool(AltEclipseArtifacts[5][9]) then
-            args[3].value = args[3].value * 1.4
+            args[3].value = args[3].value * BuffedPriceIncrease
         else
             args[3].value = args[3].value * PriceIncrease
         end
@@ -558,7 +586,7 @@ end)
 
 ---- eclipse 7 ----
 gm.post_script_hook(gm.constants.recalculate_stats, function(self, other, result, args)
-    -- increase enemy attack speed
+    -- decrease enemy attack cooldown
     if self.team == 2 and gm.bool(EclipseArtifacts[7][9]) and self.object_index ~= gm.constants.oImp then
         if gm.bool(AltEclipseArtifacts[5][9]) then
             local actor = Instance.wrap(self)
@@ -582,7 +610,7 @@ end)
 gm.pre_script_hook(gm.constants.fire_explosion, function(self, other, result, args)
     if gm.bool(AltEclipseArtifacts[7][9]) and self.team == 2 and self.object_index ~= gm.constants.oSpitter then
         if gm.bool(AltEclipseArtifacts[5][9]) then
-            args[9].value = args[9].value + math.sqrt(args[9].value)
+            args[9].value = args[9].value + math.sqrt(args[9].value) * 1.1
         else
             args[9].value = args[9].value + math.sqrt(args[9].value)
         end
@@ -591,14 +619,9 @@ end)
 -- add more bullet tracers
 gm.pre_script_hook(gm.constants.fire_bullet, function(self, other, result, args)
     if gm.bool(AltEclipseArtifacts[7][9]) and self and self.team == 2 and other ~= nil and self.object_index ~= gm.constants.oSpitter then
-        if gm.bool(AltEclipseArtifacts[5][9]) then
-            self:fire_bullet(args[1].value, args[2].value, args[3].value - 15, args[4].value, args[5].value,
-                args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value)
-        else
-            args[5].value = args[5].value * 0.5
-            self:fire_bullet(args[1].value, args[2].value, args[3].value - 10, args[4].value, args[5].value,
-                args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value)
-        end
+        args[5].value = args[5].value * 0.5
+        self:fire_bullet(args[1].value, args[2].value, args[3].value - 10, args[4].value, args[5].value,
+            args[6].value, args[7].value, args[8].value, args[9].value, args[10].value, args[11].value)
     end
 end)
 
@@ -613,12 +636,30 @@ Callback.add("onStageStart", "OnyxEclipse8-onStageStart", function()
     for i, ally in ipairs(allies) do
         local allydata = ally:get_data()
         if allydata.curseId then
-            allydata.curseStacks = 0
-            Curse.remove(ally.value, "OnyxEclipse-PermaDamage" .. allydata.curseId)
+            if gm.bool(AltEclipseArtifacts[5][9]) then
+                allydata.curseStacks = math.floor(allydata.curseStacks * 0.25)
+                Curse.apply(ally.value, "OnyxEclipse-PermaDamage" .. allydata.curseId, 1 - 1/(1 + 0.01*allydata.curseStacks))
+            else
+                allydata.curseStacks = 0
+                Curse.remove(ally.value, "OnyxEclipse-PermaDamage" .. allydata.curseId)
+            end
         end
-        CurseIndex = 0
+        -- CurseIndex = 0
     end
 end)
+
+-- Callback.add(Callback.TYPE.onSecond, NAMESPACE.."eclipse8-onSecond", function(minute, second)
+--     if gm.bool(AltEclipseArtifacts[5][9]) and second % 20 == 0 then
+--         local allies = Instance.find_all(gm.constants.pFriend)
+--         for i, ally in ipairs(allies) do
+--             local allydata = ally:get_data()
+--             if allydata.curseId then
+--                 allydata.curseStacks = math.max(allydata.curseStacks -1, 0)
+--                 Curse.apply(ally.value, "OnyxEclipse-PermaDamage" .. allydata.curseId, 1 - 1/(1 + 0.01*allydata.curseStacks))
+--             end
+--         end
+--     end
+-- end)
 
 local function apply_Curse(player, damage)
     if gm.bool(EclipseArtifacts[8][9]) and player.team == 1 then
@@ -630,10 +671,7 @@ local function apply_Curse(player, damage)
         end
 
         if damage > Curse.get_effective(player) * 0.05 then
-            playerdata.curseStacks = playerdata.curseStacks + math.floor(40 * damage / Curse.get_effective(player))
-            if gm.bool(AltEclipseArtifacts[5][9]) then
-                playerdata.curseStacks = playerdata.curseStacks + math.floor(10 * damage / Curse.get_effective(player))
-            end
+            playerdata.curseStacks = playerdata.curseStacks + math.floor(30 * damage / Curse.get_effective(player))
             Curse.apply(player, "OnyxEclipse-PermaDamage" .. playerdata.curseId, 1 - 1/(1 + 0.01*playerdata.curseStacks))
         end
 

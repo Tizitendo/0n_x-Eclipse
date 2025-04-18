@@ -6,7 +6,7 @@
 2) Teleporter Gains Radius
 3) Enemies Can Spawn After TP Event (won't drop gold)
 4) Enemy Speed: +15%
-5) Ally Healing: -50%
+5) Ally Healing: -40%
 6) Chest Prices: +30%
 7) Enemy Cooldowns: -40%
 8) Allies receive permanent damage

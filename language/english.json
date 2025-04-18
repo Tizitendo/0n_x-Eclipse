@@ -33,7 +33,7 @@
         },
         "eclipse5": {
             "name": "Eclipse (5)",
-            "description": "Ally Healing: <r>-50%</c>"
+            "description": "Ally Healing: <r>-40%</c>"
         },
         "alteclipse5": {
             "name": "Eclipse (5) Alt",
@@ -45,7 +45,7 @@
         },
         "alteclipse6": {
             "name": "Eclipse (6) Alt",
-            "description": "Every 5 Minutes <r>Empty The Closest Chest</c>"
+            "description": "Empty Closest Chest Every <r>5 Minutes</c>"
         },
         "eclipse7": {
             "name": "Eclipse (7)",
@@ -58,6 +58,64 @@
         "eclipse8": {
             "name": "Eclipse (8)",
             "description": "Allies receive <r>permanent damage</c>"
+        },
+        "alteclipse8": {
+            "name": "Eclipse (8) Alt",
+            "description": "Every Stage, <r>Activate a Random Artifact</c>"
+        },
+        "eclipse9": {
+            "name": "<#b53f80>Eclipse (9)",
+            "description": "Includes All SSR Typhoon Modifiers</c>"
+        }
+    },
+    "artifactbuffed": {
+        "eclipse1": {
+            "name": "Eclipse (1)",
+            "description": "Stagestart, Enemy Credits: <r>x2,</c>\n         <p>Boss Spawn Rate Increased</c> <r>for 60s</c>"
+        },
+        "alteclipse1": {
+            "name": "Eclipse (1) Alt",
+            "description": "Ally Starting Health: <p>-40%</c>"
+        },
+        "eclipse2": {
+            "name": "Eclipse (2)",
+            "description": "Teleporter Gains <p>2 Radii</c>"
+        },
+        "eclipse3": {
+            "name": "Eclipse (3)",
+            "description": "Enemies Can Spawn <r>After TP Event</c>"
+        },
+        "eclipse4": {
+            "name": "Eclipse (4)",
+            "description": "Enemy Speed: <p>+20%</c>"
+        },
+        "eclipse5": {
+            "name": "Eclipse (5)",
+            "description": "Ally Healing: <r>-40%</c>"
+        },
+        "alteclipse5": {
+            "name": "Eclipse (5) Alt",
+            "description": "<p>Buffs All Eclipse Modifiers</c>"
+        },
+        "eclipse6": {
+            "name": "Eclipse (6)",
+            "description": "Chest Prices: <p>+40%</c>"
+        },
+        "alteclipse6": {
+            "name": "Eclipse (6) Alt",
+            "description": "Empty Closest Chest Every <p>4 Minutes</c>"
+        },
+        "eclipse7": {
+            "name": "Eclipse (7)",
+            "description": "Enemy Cooldowns: <p>-50%</c>"
+        },
+        "alteclipse7": {
+            "name": "Eclipse (7) Alt",
+            "description": "Enemy Attack Height: <p>+60%</c>"
+        },
+        "eclipse8": {
+            "name": "Eclipse (8)",
+            "description": "Allies receive <r>permanent damage</c>\n         Stagestart: Retain <p>25% Curse</c>"
         },
         "alteclipse8": {
             "name": "Eclipse (8) Alt",
