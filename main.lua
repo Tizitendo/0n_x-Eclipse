@@ -9,6 +9,13 @@ NUMARTIFACTS = 0
 CURRENTARTIFACT = {}
 ECLIPSEDIFFICULTIES = {}
 BASESEED = os.time()
+ECLIPSEARTIFACTS = {}
+ALTECLIPSEARTIFACTS = {}
+ACTIVEECLIPSE = false
+NUMARTIFACTS = 0
+CURRENTARTIFACT = {}
+ECLIPSEDIFFICULTIES = {}
+BASESEED = os.time()
 mods.on_all_mods_loaded(function()
     for k, v in pairs(mods) do
         if type(v) == "table" and v.tomlfuncs then
@@ -30,10 +37,47 @@ local ArtifactDisplay
 local beach = nil
 local beachEnemiesNormal = nil
 local beachEnemiesEclipse = nil
+local ArtifactMenu = nil
+local EclipseDisplay
+local ArtifactDisplay
+local beach = nil
+local beachEnemiesNormal = nil
+local beachEnemiesEclipse = nil
 
 Initialize(function()
     ArtifactDisplay = List.wrap(Global.artifact_display_list)
+    ArtifactDisplay = List.wrap(Global.artifact_display_list)
     Difficulty.new("ror", "eclipse9")
+
+    --setup the different boar beach enemy lists
+    local boar_card = Monster_Card.new(NAMESPACE, "BoarM")
+    boar_card.object_id = Object.find("ror", "BoarM")
+    boar_card.spawn_cost = 20
+    boar_card.spawn_type = Monster_Card.SPAWN_TYPE.classic
+    boar_card.can_be_blighted = false
+    local bigboar_card = Monster_Card.new(NAMESPACE, "BoarR")
+    bigboar_card.object_id = Object.find("ror", "BoarR")
+    bigboar_card.spawn_cost = 200
+    bigboar_card.spawn_type = Monster_Card.SPAWN_TYPE.classic
+    bigboar_card.can_be_blighted = false
+    beach = Stage.find("ror-boarBeach")
+    local beach_cards = List.wrap(beach.spawn_enemies)
+    local boarBoss_card = Monster_Card.find("ror", "toxicBeast")
+    local scavenger_card = Monster_Card.find("ror", "scavenger")
+    beachEnemiesNormal = beach.spawn_enemies
+    beachEnemiesEclipse = List.new({
+        scavenger_card,
+        scavenger_card,
+        boarBoss_card,
+        boarBoss_card,
+        boarBoss_card,
+        boarBoss_card,
+        boarBoss_card,
+        boarBoss_card,
+        bigboar_card,
+        boar_card,
+        boar_card
+    })
 
     --setup the different boar beach enemy lists
     local boar_card = Monster_Card.new(NAMESPACE, "BoarM")
@@ -81,12 +125,14 @@ Initialize(function()
         end
     end
 
+
     -- add secret eclipse 9
     ECLIPSEDIFFICULTIES[9]:set_scaling(0.2, 4.0, 1.7)
     ECLIPSEDIFFICULTIES[9]:set_monsoon_or_higher(true)
     ECLIPSEDIFFICULTIES[9]:set_allow_blight_spawns(true)
     ECLIPSEDIFFICULTIES[9]:set_sprite(Resources.sprite_load("Onyx", "Eclipse9", PATH .. "Eclipse9.png", 2, 13, 13),
         Resources.sprite_load("Onyx", "Eclipse9_2x", PATH .. "Eclipse9_2x.png", 6, 20, 19))
+    EclipseDisplay = List.wrap(GM.variable_global_get("difficulty_display_list_eclipse"))
     EclipseDisplay = List.wrap(GM.variable_global_get("difficulty_display_list_eclipse"))
 
     for i = 1, 9 do
@@ -184,7 +230,53 @@ memory.dynamic_hook_mid("max_diff_level_fix", {"rdi"}, {"RValue*"}, 0,
 
 gm.pre_script_hook(gm.constants.game_lobby_start, function(self, other, result, args)
     local DifficultyDisplay = List.wrap(GM.variable_global_get("difficulty_display_list"))
+    for i = 1, 9 do
+        require("EclipseLevels/Eclipse"..i)
+    end
+end)
 
+gm.post_script_hook(gm.constants.difficulty_eclipse_get_max_available_level_for_survivor,
+    function(self, other, result, args)
+        -- result.value = 999
+        local Survivors = Global.class_survivor
+        if params.Unlocked9[Survivors[args[1].value + 1][1] .. "-" .. Survivors[args[1].value + 1][2]] then
+            result.value = 9
+        end
+
+        for i = #ArtifactDisplay, 1, -1 do
+            ArtifactDisplay:delete(i - 1)
+        end
+        for i = 1, result.value do
+            if Wrap.wrap(ALTECLIPSEARTIFACTS[i]) then
+                ArtifactDisplay:add(Wrap.wrap(ALTECLIPSEARTIFACTS[i]))
+            end
+        end
+    end)
+
+-- check if e8 was beaten
+Callback_Raw.add(Callback.TYPE.onGameEnd, "OnyxEclipse-onGameEnd", function(self, other, result, args)
+    if self ~= nil and self.object_index == gm.constants.oCommandFinal and ECLIPSEDIFFICULTIES[8]:is_active() then
+        local Survivors = Global.class_survivor
+        params.Unlocked9[Survivors[GM._mod_player_get_survivor(Player.get_client()) + 1][1] .. "-" ..
+            Survivors[GM._mod_player_get_survivor(Player.get_client()) + 1][2]] = true
+        Toml.save_cfg(_ENV["!guid"], params)
+    end
+end)
+
+-- make eclipse 9 unlockable
+memory.dynamic_hook_mid("max_diff_level_fix", {"rdi"}, {"RValue*"}, 0,
+    gm.get_script_function_address(106251):add(475), function(args)
+        if Difficulty.find("ssr", "typhoon") then
+            args[1].value = 9.0
+        end
+    end)
+
+gm.pre_script_hook(gm.constants.game_lobby_start, function(self, other, result, args)
+    local DifficultyDisplay = List.wrap(GM.variable_global_get("difficulty_display_list"))
+
+    if Difficulty.find("ssr", "typhoon") and EclipseDisplay[#EclipseDisplay] ~= Wrap.wrap(ECLIPSEDIFFICULTIES[9]) then
+        EclipseDisplay:add(Wrap.wrap(ECLIPSEDIFFICULTIES[9]))
+    end
     if Difficulty.find("ssr", "typhoon") and EclipseDisplay[#EclipseDisplay] ~= Wrap.wrap(ECLIPSEDIFFICULTIES[9]) then
         EclipseDisplay:add(Wrap.wrap(ECLIPSEDIFFICULTIES[9]))
     end
@@ -196,7 +288,17 @@ gm.pre_script_hook(gm.constants.game_lobby_start, function(self, other, result, 
             DifficultyDisplay:delete(i - 1)
         end
     end
+    for i = #DifficultyDisplay, 1, -1 do
+        if DifficultyDisplay[i] == Wrap.wrap(Eclipse) or DifficultyDisplay[i] == Wrap.wrap(ECLIPSEDIFFICULTIES[9]) then
+            DifficultyDisplay:delete(i - 1)
+        elseif DifficultyDisplay[i] > 2 and DifficultyDisplay[i] < 11 then
+            DifficultyDisplay:delete(i - 1)
+        end
+    end
 
+    for i = #ArtifactDisplay, 1, -1 do
+        ArtifactDisplay:delete(i - 1)
+    end
     for i = #ArtifactDisplay, 1, -1 do
         ArtifactDisplay:delete(i - 1)
     end
@@ -207,7 +309,16 @@ gm.pre_script_hook(gm.constants.game_lobby_start, function(self, other, result, 
                 table.insert(BaseArtifacts, k - 1)
             end
         end
+    local BaseArtifacts = {}
+        for k, v in ipairs(Global.class_artifact) do
+            if v ~= 0 and v[2] ~= 0 and v[1] ~= "OnyxEclipse" and v[1] ~= "OnyxAltEclipse" then
+                table.insert(BaseArtifacts, k - 1)
+            end
+        end
 
+        for i = 1, #BaseArtifacts do
+            ArtifactDisplay:add(BaseArtifacts[i])
+        end
         for i = 1, #BaseArtifacts do
             ArtifactDisplay:add(BaseArtifacts[i])
         end
@@ -217,7 +328,22 @@ gm.pre_script_hook(gm.constants.game_lobby_start, function(self, other, result, 
     else
         DifficultyDisplay:add(Wrap.wrap(Eclipse))
     end
+    if self and self.class_ind == nil then
+        
+    else
+        DifficultyDisplay:add(Wrap.wrap(Eclipse))
+    end
 
+    if (self and self.class_ind == nil) or params.ShowArtifacts then
+        for i = 1, 8 do
+            ArtifactDisplay:add(Wrap.wrap(ECLIPSEARTIFACTS[i]))
+        end
+        for i = 1, 9 do
+            if Wrap.wrap(ALTECLIPSEARTIFACTS[i]) then
+                ArtifactDisplay:add(Wrap.wrap(ALTECLIPSEARTIFACTS[i]))
+            end
+        end
+    end
     if (self and self.class_ind == nil) or params.ShowArtifacts then
         for i = 1, 8 do
             ArtifactDisplay:add(Wrap.wrap(ECLIPSEARTIFACTS[i]))
@@ -294,6 +420,7 @@ end)
 Callback.add(Callback.TYPE.onStageStart, NAMESPACE.."onStageStart", function()
     TELEPORTER = nil
 end)
+
 
 Callback.add("onPlayerInit", "OnyxEclipseGen-onPlayerInit", function(self)
     local PlayerId = self.m_id
