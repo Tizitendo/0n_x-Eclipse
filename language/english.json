@@ -13,7 +13,7 @@
         },
         "eclipse1": {
             "name": "Eclipse (1)",
-            "description": "StageStart, Enemy Credits: <r>x2 for 60s</c></c>"
+            "description": "Prespawns: <r>enabled</c>"
         },
         "alteclipse1": {
             "name": "Eclipse (1) Alt",
@@ -45,7 +45,7 @@
         },
         "alteclipse6": {
             "name": "Eclipse (6) Alt",
-            "description": "Empty Closest Chest Every <r>5 Minutes</c>"
+            "description": "Empty Closest Chest Every <r>4 Minutes</c>"
         },
         "eclipse7": {
             "name": "Eclipse (7)",
@@ -71,11 +71,11 @@
     "artifactbuffed": {
         "eclipse1": {
             "name": "Eclipse (1)",
-            "description": "Stagestart, Enemy Credits: <r>x2,</c>\n         <p>Boss Spawn Rate Increased</c> <r>for 60s</c>"
+            "description": "Prespawns: <r>enabled</c>"
         },
         "alteclipse1": {
             "name": "Eclipse (1) Alt",
-            "description": "Ally Starting Health: <p>-40%</c>"
+            "description": "Ally Starting Health: <p>-60%</c>"
         },
         "eclipse2": {
             "name": "Eclipse (2)",
@@ -103,7 +103,7 @@
         },
         "alteclipse6": {
             "name": "Eclipse (6) Alt",
-            "description": "Empty Closest Chest Every <p>4 Minutes</c>"
+            "description": "Empty <p>4</c> Closest Chests Every <p>8 Minutes</c>"
         },
         "eclipse7": {
             "name": "Eclipse (7)",

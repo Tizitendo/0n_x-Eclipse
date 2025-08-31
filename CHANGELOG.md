@@ -1,3 +1,7 @@
+## 1.3.0
+* updated to version 1.1.0
+* reworked e1: There are now prespawned enemies on each stage
+
 ## 1.2.9
 * enabling alt eclipse levels now replaces the default eclipse levels in the difficulty description
 * e5 heal reduction reduced to -40%
