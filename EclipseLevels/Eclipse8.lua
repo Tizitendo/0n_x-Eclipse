@@ -4,13 +4,13 @@ local BaseArtifacts = {}
 
 -- apply curse
 local CurseIndex = 0
-local damagePacket = Packet.new()
+-- local damagePacket = Packet.new()
 
-Callback.add("onStageStart", "OnyxEclipse8-onStageStart", function()
+Callback.add(Callback.ON_STAGE_START, function()
     -- reset ally curse when entering a new stage
     local allies = Instance.find_all(gm.constants.pFriend)
     for i, ally in ipairs(allies) do
-        local allydata = ally:get_data()
+        local allydata = Instance.get_data(ally)
         if allydata.curseId then
             if gm.bool(ALTECLIPSEARTIFACTS[5].active) then
                 allydata.curseStacks = math.floor(allydata.curseStacks * 0.25)
@@ -25,7 +25,7 @@ end)
 
 local function apply_Curse(player, damage)
     if gm.bool(ECLIPSEARTIFACTS[8].active) and player.team == 1 then
-        local playerdata = player:get_data()
+        local playerdata = Instance.get_data(player)
         if not playerdata.curseId then
             playerdata.curseId = CurseIndex
             playerdata.curseStacks = 0
@@ -44,7 +44,7 @@ local function apply_Curse(player, damage)
     end
 end
 
-gm.post_script_hook(gm.constants.damage_inflict_raw, function(self, other, result, args)
+Hook.add_post(gm.constants.damage_inflict_raw, function(self, other, result, args)
     apply_Curse(Instance.wrap(args[1].value), args[2].value.damage)
 end)
 
@@ -54,10 +54,10 @@ local KeepArtifact = {}
 local spiritStatHandler = Item.new("OnyxEclipse", "spiritStatHandler", true)
 spiritStatHandler.is_hidden = true
 spiritStatHandler:toggle_loot(false)
-local SeedPacket = Packet.new()
+local SeedPacket = Packet.new("SeedPacket")
 
 local Artifacts = {}
-Callback.add("onGameStart", "OnyxAltEclipse8-onGameStart", function()
+Callback.add(Callback.ON_GAME_START, function()
     ItemDropChance = DefaultSacrificeDropChance
     for i = 1, #CURRENTARTIFACT do
         CURRENTARTIFACT[i] = 0
@@ -85,113 +85,26 @@ Callback.add("onGameStart", "OnyxAltEclipse8-onGameStart", function()
     end
 end)
 
-gm.post_script_hook(gm.constants.net_refresh_players, function(self, other, result, args)
-    if gm._mod_net_isHost() and not gm._mod_game_ingame() then
-        math.randomseed(BASESEED)
-        local msg = SeedPacket:message_begin()
-        msg:write_uint(BASESEED)
-        msg:send_to_all()
-    end
-end)
-
-SeedPacket:onReceived(function(msg)
-    BASESEED = msg:read_uint()
+SeedPacket:set_serializers(function(buffer, baseSeed)
+    buffer:write_uint(baseSeed)
+end, 
+function(buffer, player)
+    BASESEED = buffer:read_uint()
     math.randomseed(BASESEED)
 end)
 
-local ArtifactScene = false
-gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
-    -- Helper.log_hook(self, other, result, args)
-    -- log.warning(self.object_index)
-    -- log.warning(other)
-    if self == nil or self.object_index == gm.constants.oDirectorControl then
-        -- ArtifactScene = true
-        -- return false
+Hook.add_post(gm.constants.net_refresh_players, function()
+    if gm._mod_net_isHost() and not gm._mod_game_ingame() then
+        math.randomseed(BASESEED)
+        SeedPacket:send_to_all(BASESEED)
     end
-end)
-
-local hest = Resources.sprite_load("Onyx", "ArtifactBackground", PATH .. "SelectArtifactBackground.png", 1, 0, 0)
-local Cursor = Resources.sprite_load("Onyx", "Cursor", PATH .. "Cursor.png", 1, 5, 4)
-local SpriteScale = 1
-local TileScale = 2
-local CursorX = 0
-local CursorY = 0
-local ArtifactShowTimer = 0
-local Pausemenu = Instance.find(Object.find("ror", "PauseMenu"))
-local lastanimate = 0
-
-gm.pre_code_execute("gml_Object_oHUD_Draw_73", function(self, other)
-    if ArtifactScene then
-        return false
-    end
-end)
-
-gm.post_script_hook(gm.constants._ui_draw_button, function(self, other, result, args)
-    -- Helper.log_hook(self, other, result, args)
-    -- log.warning(gm.is_struct(args[1].value))
-end)
-
-gm.post_code_execute("gml_Object_oInit_Draw_64", function(self, other)
-    -- gm._ui_draw_button_overlay(hest, 2070, 1176, -44, 1216, -16, 0, nil)
-    -- local hi = gm.new_struct()
-    -- hi.was_updated = true
-    -- hi.draw_hover
-
-    local ViewWidth = gm.display_get_gui_width()
-    local ViewHeight = gm.display_get_gui_height()
-
-    if ArtifactShowTimer > 0 and lastanimate == Pausemenu.pause_animate then
-        ArtifactShowTimer = ArtifactShowTimer - 1
-        -- NUMARTIFACTS = 1
-        for i = 1, NUMARTIFACTS do
-            -- gm.draw_sprite_ext(CURRENTARTIFACT[i][7], 0, ViewWidth / 2 - SpriteScale * 5, ViewHeight / 2 + 83 *
-            --     SpriteScale * (1 + (i - 1) * 0.65) - 50 + SpriteScale * (NUMARTIFACTS - 1) * 25, SpriteScale,
-            --     SpriteScale, 0, Color.WHITE, ArtifactShowTimer / 20)
-            gm.draw_sprite_ext(CURRENTARTIFACT[i][7], 0, ViewWidth / 2 - SpriteScale * 5, ViewHeight * 0.5 - 5 + 60 *
-                SpriteScale * (1 + (i - 1) * 0.95) + SpriteScale * (NUMARTIFACTS - 1) * 25, SpriteScale, SpriteScale, 0,
-                Color.WHITE, ArtifactShowTimer / 20)
-        end
-        if not gm._mod_game_ingame() then
-            ArtifactShowTimer = 0
-        end
-    end
-    lastanimate = Pausemenu.pause_animate
-
-    -- if ArtifactScene or true then
-    --     gm.draw_rectangle_colour(0, 0, ViewWidth, ViewHeight, 0, 0, 0, 0, false);
-    --     local TilePosX = 0
-    --     local TilePosY = ViewHeight / 2 - 100
-
-    --     for i = 0, 2 do
-    --         TilePosX = ViewWidth / 2 - 69 * TileScale + 50 * i * TileScale
-    --         gm.draw_sprite_ext(hest, 0, TilePosX, TilePosY, TileScale, TileScale, 0, Color.WHITE, 1)
-    --         if CursorX > TilePosX and CursorX < TilePosX + 38 * TileScale and CursorY > TilePosY and CursorY < TilePosY +
-    --             38 * TileScale then
-    --             gm.draw_sprite_ext(Cursor, 0, TilePosX, TilePosY, SpriteScale, SpriteScale, 0, Color.WHITE, 1)
-    --         end
-    --     end
-    -- end
-end)
-
--- gui.add_always_draw_imgui(function()
---     CursorX, CursorY = ImGui.GetMousePos()
--- end)
-
-gm.pre_script_hook(gm.constants.prefs_set_hud_scale, function(self, other, result, args)
-    SpriteScale = args[1].value
-    TileScale = args[1].value * 2
-end)
-
-gm.post_script_hook(gm.constants.stage_load_room, function(self, other, result, args)
-    SpriteScale = gm.prefs_get_hud_scale()
-    TileScale = SpriteScale * 2
 end)
 
 local function ArtifactNewLevel(stage)
     BASESEED = BASESEED + 100
     if ACTIVEECLIPSE then
         for i = 1, 9 do
-            ECLIPSEDIFFICULTIES[i]:set_allow_blight_spawns(true)
+            ECLIPSEDIFFICULTIES[i].allow_blight_spawns = true
         end
     end
 
@@ -264,8 +177,8 @@ local function ArtifactNewLevel(stage)
             end
             if CURRENTARTIFACT[i][2] == "distortion" then
                 local function WaitforPlayerInit()
-                    if PLAYER[1]:item_stack_count(Item.find("ror", "distortionStatHandler")) == 0 then
-                        PLAYER[1]:item_give(Item.find("ror", "distortionStatHandler"))
+                    if PLAYER[1]:item_count(Item.find("distortionStatHandler", "ror")) == 0 then
+                        PLAYER[1]:item_give(Item.find("distortionStatHandler", "ror"))
                     end
                     math.randomseed(BASESEED)
                     PLAYER[1]:add_skill_override(math.random(0, 3), 0)
@@ -274,7 +187,7 @@ local function ArtifactNewLevel(stage)
             end
             if CURRENTARTIFACT[i][2] == "spirit" then
                 local function WaitforPlayerInit()
-                    if PLAYER[1]:item_stack_count(spiritStatHandler) == 0 then
+                    if PLAYER[1]:item_count(spiritStatHandler) == 0 then
                         PLAYER[1]:item_give(spiritStatHandler)
                     end
                 end
@@ -282,8 +195,8 @@ local function ArtifactNewLevel(stage)
             end
             if CURRENTARTIFACT[i][2] == "glass" then
                 local function WaitforPlayerInit()
-                    if PLAYER[1]:item_stack_count(Item.find("ror", "glassStatHandler")) == 0 then
-                        PLAYER[1]:item_give(Item.find("ror", "glassStatHandler"))
+                    if PLAYER[1]:item_count(Item.find("glassStatHandler", "ror")) == 0 then
+                        PLAYER[1]:item_give(Item.find("glassStatHandler", "ror"))
                     end
                 end
                 Alarm.create(WaitforPlayerInit, 1)
@@ -308,21 +221,20 @@ local function ArtifactNewLevel(stage)
     end
 end
 
-Callback.add(Callback.TYPE.onStageStart, "OnyxAltEclipse8-onStageStart", function()
+Callback.add(Callback.ON_STAGE_START, function()
     if not gm._mod_net_isHost() then
         ArtifactNewLevel()
     end
 end)
 
--- gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
-gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
+Hook.add_pre(gm.constants.stage_goto, function(self, other, result, args)
     if gm._mod_net_isHost() then
         ArtifactNewLevel(args[1].value)
     end
 end)
 
 -- Distortion
-Callback.add("onMinute", "OnyxAltEclipse8-onMinute", function(minute, second)
+Callback.add(Callback.ON_MINUTE, function(minute, second)
     for i = 1, NUMARTIFACTS do
         if CURRENTARTIFACT[i][2] == "distortion" then
             PLAYER[1]:remove_skill_override(0, 0)
@@ -336,8 +248,10 @@ Callback.add("onMinute", "OnyxAltEclipse8-onMinute", function(minute, second)
 end)
 
 -- Spirit
-spiritStatHandler:onPostStep(function(actor, stack)
-    actor.pHmax = actor.pHmax_raw - 2 * (actor.hp / actor.maxhp) + 2
+Callback.add(Callback.ON_PLAYER_STEP, function(player)
+    if player:item_count(spiritStatHandler) > 0 then
+        player.pHmax = player.pHmax_raw - 2 * (player.hp / player.maxhp) + 2
+    end
 end)
 
 gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
@@ -356,18 +270,18 @@ gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result,
 end)
 
 -- Sacrifice
-Callback.add(Callback.TYPE.onKillProc, "OnyxArtifactSacrifice-onKillProc", function(victim, killer)
+Callback.add(Callback.ON_KILL_PROC, function(target, attacker)
     for i = 1, NUMARTIFACTS do
         if CURRENTARTIFACT[i][2] == "sacrifice" and not FinishedTele and math.random(1, ItemDropChance) ==
             ItemDropChance then
             if math.random(1, 50) == 50 then
-                Item.get_random(2):create(victim.x, victim.y)
+                Item.get_random(2):create(target.x, target.y)
             elseif math.random(1, 4) == 4 then
-                Item.get_random(1):create(victim.x, victim.y)
+                Item.get_random(1):create(target.x, target.y)
             elseif math.random(1, 5) == 5 then
-                Equipment.get_random():create(victim.x, victim.y)
+                Equipment.get_random():create(target.x, target.y)
             else
-                Item.get_random(0):create(victim.x, victim.y)
+                Item.get_random(0):create(target.x, target.y)
             end
             ItemDropChance = ItemDropChance + 3
         end
@@ -400,7 +314,7 @@ gm.post_script_hook(gm.constants.interactable_init, function(self, other, result
 end)
 
 -- Cognation
-Callback.add("onEliteInit", "OnyxArtifactCognant-onEliteInit", function(actor)
+Callback.add(Callback.ON_ELITE_INIT, function(actor)
     for i = 1, NUMARTIFACTS do
         if CURRENTARTIFACT[i][2] == "cognation" and actor.elite_type == 7 then
             local function NerfCognants()
@@ -414,7 +328,7 @@ Callback.add("onEliteInit", "OnyxArtifactCognant-onEliteInit", function(actor)
 end)
 
 -- Prestige
-gm.post_script_hook(gm.constants.interactable_set_active, function(self, other, result, args)
+Hook.add_post(gm.constants.interactable_set_active, function(self, other)
     for i = 1, NUMARTIFACTS do
         if CURRENTARTIFACT[i][2] == "mountain" and self.object_index == gm.constants.oShrineMountainS then
             local function DoubleMountains()
@@ -442,28 +356,28 @@ end)
 
 -- Origin
 local timeMinute = 0
-Callback.add("onMinute", "OnyxArtifactOrigin-onMinute", function(minute, second)
+Callback.add(Callback.ON_MINUTE, function(minute, second)
     if NUMARTIFACTS == 0 then
         timeMinute = 0
     end
     for i = 1, NUMARTIFACTS do
         if CURRENTARTIFACT[i][2] == "origin" and minute % 5 == 0 then
             timeMinute = minute
-            local Invasion = Object.find("ror", "ImpPortal")
-            for i = 1, 1 + minute / 10 do
+            local Invasion = Object.find("ImpPortal", "ror")
+            for o = 1, 1 + minute / 10 do
                 Invasion:create(PLAYER[1].x, PLAYER[1].y)
             end
         end
     end
 end)
-gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
+Hook.add_post(gm.constants.enemy_stats_init, function(self, other)
     if self ~= nil and self.object_index == gm.constants.oImpGS then
         self.damage_base = self.damage_base * (1 + timeMinute / 10)
     end
 end)
 
 -- Tempus
-gm.post_script_hook(gm.constants.item_give, function(self, other, result, args)
+Hook.add_post(gm.constants.item_give, function(self, other, result, args)
     for i = 1, NUMARTIFACTS do
         if CURRENTARTIFACT[i][2] == "temporary" and args[3].value == 3 then
             gm.item_give_internal(args[1].value, args[2].value, 2, args[4].value)

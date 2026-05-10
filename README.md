@@ -2,7 +2,8 @@
 
 - Adds the cut Eclipse gamemode back into the game
 - Each eclipse modifier can also be turned on individually via artifacts
-1) StageStart, Director Credits: +200% for 60s
+
+1) Prespawns: enabled
 2) Teleporter Gains Radius
 3) Enemies Can Spawn After TP Event (won't drop gold)
 4) Enemy Speed: +15%

@@ -1,3 +1,10 @@
+## 1.3.2
+* Updated to rapi
+
+## 1.3.1
+* fixed games played increasing when selecting the "eclipse" difficulty that opens the eclipse menu
+* e1 can now spawn elites and should spawn enemies less inside walls
+
 ## 1.3.0
 * updated to version 1.1.0
 * reworked e1: There are now prespawned enemies on each stage

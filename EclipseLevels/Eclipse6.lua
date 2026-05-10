@@ -2,7 +2,7 @@ local PriceIncrease = 1.3
 local BuffedPriceIncrease = 1.4
 
 -- increase chest prices
-gm.pre_script_hook(gm.constants.interactable_init_cost, function(self, other, result, args)
+Hook.add_pre(gm.constants.interactable_init_cost, function(self, other, result, args)
     if args[2].value == 0 and gm.bool(ECLIPSEARTIFACTS[6].active) and type(args[1].value) ~= "number" and
     (gm.object_get_parent(args[1].value.object_index) == gm.constants.pInteractableChest or 
     args[1].value.object_index == gm.constantsoChest4 or 
@@ -17,12 +17,23 @@ end)
 
 -- Alt --
 local ChestRemoveCount = 0
-local ChestPacket = Packet.new()
-Callback.add("onGameStart", "OnyxAltEclipse5-onGameStart", function()
+local ChestPacket = Packet.new("ChestPacket")
+
+Callback.add(Callback.ON_GAME_START, function()
     ChestRemoveCount = 0
 end)
+
+ChestPacket:set_serializers(function(buffer, chest)
+    buffer:write_instance(chest)
+end, 
+function(buffer, player)
+    local chest = buffer:read_instance()
+    chest.active = 1
+    chest.open_delay = 0
+end)
+
 local function EmptyChest(minute)
-    local player = Player.get_client()
+    local player = Player.get_local()
     local Chests = Instance.find_all(Instance.chests)
 
     local function compareDistance(a, b)
@@ -36,28 +47,21 @@ local function EmptyChest(minute)
             Chests[1].open_delay = 0
             ChestRemoveCount = ChestRemoveCount - 1
         end
-        if gm._mod_net_isOnline() then
-            local msg = ChestPacket:message_begin()
-            msg:write_instance(Chests[1])
-            msg:send_to_all()
+        if Net.online then
+            ChestPacket:send_to_all(Chests[1])
         end
         table.remove(Chests, 1)
     end
 end
-ChestPacket:onReceived(function(msg)
-    local chest = msg:read_instance()
-    chest.active = 1
-    chest.open_delay = 0
-end)
 
-Callback.add("onStageStart", "OnyxAltEclipse5-onStageStart", function()
+Callback.add(Callback.ON_STAGE_START, function()
     if gm.bool(ALTECLIPSEARTIFACTS[6].active) then
         if gm._mod_net_isHost() then
         Alarm.create(EmptyChest, 1, 0)
         end
     end
 end)
-Callback.add("onMinute", "OnyxAltEclipse5-onMinute", function(minute, second)
+Callback.add(Callback.ON_MINUTE, function(minute, second)
     for i = 1, NUMARTIFACTS do
         if CURRENTARTIFACT[i][2] == "sacrifice" then
             return;

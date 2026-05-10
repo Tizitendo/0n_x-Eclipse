@@ -16,12 +16,12 @@ local TeleColor = 190540540
 local BuffedTeleColor = Color.from_hex(0xb53f80)
 local Tele_circles = {}
 
-Callback.add(Callback.TYPE.onStageStart, NAMESPACE.."2-onStageStart", function()
+Callback.add(Callback.ON_STAGE_START, function()
     disableChests = true
     Tele_circles = {}
 end)
 
-Callback.add("onStep", "OnyxEclipse2-onStep", function()
+Callback.add(Callback.ON_STEP, function()
     -- get number of alive players
     alivePlayers = 0
     for i = 1, #PLAYER do
@@ -93,12 +93,11 @@ Callback.add("onStep", "OnyxEclipse2-onStep", function()
 
 end)
 
-gm.post_script_hook(gm.constants["update_boss_party_active@gml_Object_oDirectorControl_Create_0"],
-    function(self, other, result, args)
-        KilledBoss = true
-    end)
+Hook.add_post(gm.constants["update_boss_party_active@gml_Object_oDirectorControl_Create_0"], function()
+    KilledBoss = true
+end)
 
-gm.pre_script_hook(gm.constants.interactable_set_active, function(self, other, result, args)
+Hook.add_pre(gm.constants.interactable_set_active, function(self, other)
     if self.object_index == gm.constants.oTeleporter or self.object_index == gm.constants.oTeleporterEpic or
         self.object_index == gm.constants.oBlastdoorPanel then
         RadiusMul = 0
@@ -106,7 +105,7 @@ gm.pre_script_hook(gm.constants.interactable_set_active, function(self, other, r
     end
 end)
 
-Callback.add("onDraw", "OnyxEclipse2-onDraw", function()
+Callback.add(Callback.ON_DRAW, function()
     if gm.bool(ECLIPSEARTIFACTS[2].active) and TELEPORTER then
         gm.draw_set_circle_precision(128)
         if TELEPORTER.active == 1 then
@@ -154,7 +153,7 @@ Callback.add("onDraw", "OnyxEclipse2-onDraw", function()
     end
 end)
 
-gm.pre_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
+Hook.add_pre(gm.constants.enemy_stats_init, function(self, other)
     if TELEPORTER and TELEPORTER.active == 1 and gm.bool(ECLIPSEARTIFACTS[2].active) then
         local DistanceX, DistanceY
         for i = 1, #PLAYER do

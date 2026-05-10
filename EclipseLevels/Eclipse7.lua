@@ -1,8 +1,8 @@
 local EnemyCooldowns = 0.6
 local BuffedEnemyCooldowns = 0.5
 
-gm.post_script_hook(gm.constants.recalculate_stats, function(self, other, result, args)
-    -- decrease enemy attack cooldown
+-- decrease enemy attack cooldown
+Hook.add_post(gm.constants.recalculate_stats, function(self, other)
     if self.team == 2 and gm.bool(ECLIPSEARTIFACTS[7].active) and self.object_index ~= gm.constants.oImp then
         if gm.bool(ALTECLIPSEARTIFACTS[5].active) then
             local actor = Instance.wrap(self)
@@ -23,7 +23,7 @@ gm.post_script_hook(gm.constants.recalculate_stats, function(self, other, result
 end)
 ---- Alt ----
 -- increase explosion height
-gm.pre_script_hook(gm.constants.fire_explosion, function(self, other, result, args)
+Hook.add_pre(gm.constants.fire_explosion, function(self, other, result, args)
     if gm.bool(ALTECLIPSEARTIFACTS[7].active) and self.team == 2 and self.object_index ~= gm.constants.oSpitter then
         if gm.bool(ALTECLIPSEARTIFACTS[5].active) then
             args[9].value = args[9].value + math.sqrt(args[9].value) * 1.1
@@ -33,7 +33,7 @@ gm.pre_script_hook(gm.constants.fire_explosion, function(self, other, result, ar
     end
 end)
 -- add more bullet tracers
-gm.pre_script_hook(gm.constants.fire_bullet, function(self, other, result, args)
+Hook.add_pre(gm.constants.fire_bullet, function(self, other, result, args)
     if gm.bool(ALTECLIPSEARTIFACTS[7].active) and self and self.team == 2 and other ~= nil and self.object_index ~= gm.constants.oSpitter then
         args[5].value = args[5].value * 0.5
         self:fire_bullet(args[1].value, args[2].value, args[3].value - 10, args[4].value, args[5].value,

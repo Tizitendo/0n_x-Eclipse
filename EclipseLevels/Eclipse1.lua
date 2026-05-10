@@ -1,32 +1,31 @@
 local reducedGoldDrops = false
 
-Callback.remove(NAMESPACE.."1-onStageStart")
-Callback.add("onStageStart", NAMESPACE.."1-onStageStart", function()
+Callback.add(Callback.ON_STAGE_START, function()
     if gm.bool(ECLIPSEARTIFACTS[1].active) then
-        DIRECTOR.points = DIRECTOR.points + 500
-        local roomWidth = gm._mod_room_get_current_width()
-        local roomHeight = gm._mod_room_get_current_height()
+        -- local roomWidth = gm._mod_room_get_current_width()
+        -- local roomHeight = gm._mod_room_get_current_height()
         local enemies = List.wrap(Stage.wrap(gm._mod_game_getCurrentStage()).spawn_enemies)
 
         reducedGoldDrops = true
-        local function resetGoldMul()
-            reducedGoldDrops = false
-        end
-        Alarm.create(resetGoldMul, 1)
-
-        if gm.bool(ALTECLIPSEARTIFACTS[5].active) then
-            DIRECTOR.points = DIRECTOR.points + 150 + 30 * DIRECTOR.minute_current
-        else
-            DIRECTOR.points = DIRECTOR.points + 100 + 25 * DIRECTOR.minute_current
-        end
-        
-        for i = 1, 100 do
-            local enemy = enemies[math.random(1, #enemies)]
-            if Monster_Card.wrap(enemy).spawn_cost <= DIRECTOR.points then
-                DIRECTOR:director_spawn_monster_card(math.random(1, gm._mod_room_get_current_width()), math.random(1, gm._mod_room_get_current_height()), enemy, 1)
-                DIRECTOR.points = DIRECTOR.points - Monster_Card.wrap(enemy).spawn_cost
+        Alarm.add(1, function()
+            if gm.bool(ALTECLIPSEARTIFACTS[5].active) then
+                DIRECTOR.points = DIRECTOR.points + 300 + 30 * DIRECTOR.minute_current
+            else
+                DIRECTOR.points = DIRECTOR.points + 200 + 25 * DIRECTOR.minute_current
             end
-        end
+            
+            for i = 1, 100 do
+                local enemy = enemies[math.random(1, #enemies)]
+                local ground = DIRECTOR:ground_nearest(math.random(1, gm._mod_room_get_current_width()), math.random(1, gm._mod_room_get_current_height()))
+                DIRECTOR.points = DIRECTOR.points + 5 + 2 * DIRECTOR.stages_passed
+                if MonsterCard.wrap(enemy).spawn_cost <= DIRECTOR.points then
+                    local instance = DIRECTOR:director_spawn_monster_card(ground.x + math.random(0, ground.width_box * 32 - 32), ground.y - ground.height_box * 32, enemy, 10)
+                    DIRECTOR.points = DIRECTOR.points - MonsterCard.wrap(enemy).spawn_cost
+                    DIRECTOR:director_try_elite_spawn(instance, enemy, false)
+                end
+            end
+            reducedGoldDrops = false
+        end)
     end
 
     -- Alt
@@ -41,7 +40,7 @@ Callback.add("onStageStart", NAMESPACE.."1-onStageStart", function()
         end
     end
 end)
-gm.post_script_hook(gm.constants.instance_create_depth, function(self, other, result, args)
+Hook.add_post(gm.constants.instance_create_depth, function(self, other, result, args)
     if gm.bool(ALTECLIPSEARTIFACTS[1].active) and result.value ~= nil and result.value.hp ~= nil and result.value.team == 1 and
         result.value.object_index ~= gm.constants.oP then
         if gm.bool(ALTECLIPSEARTIFACTS[5].active) then
@@ -53,7 +52,7 @@ gm.post_script_hook(gm.constants.instance_create_depth, function(self, other, re
 end)
 
 -- doesn't use drop_gold_and_exp to keep barrel gold the same
-gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
+Hook.add_post(gm.constants.enemy_stats_init, function(self, other, result, args)
     if reducedGoldDrops then
         if gm.bool(ALTECLIPSEARTIFACTS[5].active) then
             self.exp_worth = self.exp_worth * 0.45

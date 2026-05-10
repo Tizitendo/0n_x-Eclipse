@@ -1,43 +1,43 @@
 local EndFight = false
 local FinishedTele = false
-local UpdatePacket = Packet.new()
+local UpdatePacket = Packet.new("finishedTele")
 
-Callback.add(Callback.TYPE.onStageStart, NAMESPACE.."3-onStageStart", function()
+Callback.add(Callback.ON_STAGE_START, function()
     EndFight = false
     FinishedTele = false
 end)
 
-Callback.add("onStep", "OnyxEclipse3-onStep", function()
+Callback.add(Callback.ON_STEP, function()
     -- log.warning(DIRECTOR:alarm_get(1))
     if DIRECTOR:alarm_get(1) == 1 then
         if EndFight then
-            local function DecreaseSpawnRate()
+            Alarm.add(2, function()
                 -- DIRECTOR:alarm_set(1, DIRECTOR:alarm_get(1) * 3)
-                DIRECTOR:alarm_set(1, 1500)
-            end
-            Alarm.create(DecreaseSpawnRate, 2)
+                DIRECTOR:alarm_set(1, 1800)
+            end)
         end
     end
 end)
 
-Callback.add("onSecond", "OnyxEclipse3-onSecond", function(minute, second)
+UpdatePacket:set_serializers(function(buffer, finishedTele)
+    buffer:write_bool(finishedTele)
+end, 
+function(buffer, player)
+    FinishedTele = buffer:read_bool()
+end)
+
+Callback.add(Callback.ON_SECOND, function(minute, second)
     if gm.bool(ECLIPSEARTIFACTS[3].active) and DIRECTOR:alarm_get(1) < 0 then
         DIRECTOR.points = 0
         DIRECTOR:alarm_set(1, 600)
         FinishedTele = true
-        if gm._mod_net_isOnline() and gm._mod_net_isHost() then
-            local msg = UpdatePacket:message_begin()
-            msg:write_byte(FinishedTele)
-            msg:send_to_all()
+        if Net.online and Net.host then
+            UpdatePacket:send_to_all(FinishedTele)
         end
     end
 end)
 
-UpdatePacket:onReceived(function(msg)
-    FinishedTele = gm.bool(msg:read_byte())
-end)
-
-gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result, args)
+Hook.add_post(gm.constants.enemy_stats_init, function(self, other)
     if NUMARTIFACTS == 0 then
         if FinishedTele and self.team == 2 then
             self.exp_worth = 0
@@ -51,7 +51,7 @@ gm.post_script_hook(gm.constants.enemy_stats_init, function(self, other, result,
     end
 end)
 
-gm.pre_script_hook(gm.constants.interactable_set_active, function(self, other, result, args)
+Hook.add_pre(gm.constants.interactable_set_active, function(self, other)
     if self.object_index == gm.constants.oCommand then
         -- reduce enemy spawning after starting provi fight
         EndFight = true

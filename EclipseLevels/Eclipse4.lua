@@ -3,7 +3,7 @@ local BuffedEnemyMoveSpeed = 1.2
 local EnemyAttackSpeed = 1.15
 local BuffedEnemyAttackSpeed = 1.2
 
-gm.post_script_hook(gm.constants.recalculate_stats, function(self, other, result, args)
+Hook.add_post(gm.constants.recalculate_stats, function(self, other)
     -- increase enemy speed
     if self.team == 2 and gm.bool(ECLIPSEARTIFACTS[4].active) and self.object_index ~= gm.constants.oGolemT and
         self.object_index ~= gm.constants.imp then
