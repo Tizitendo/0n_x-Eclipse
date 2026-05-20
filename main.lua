@@ -240,10 +240,8 @@ Hook.add_pre(gm.constants["anon@26822@gml_Object_oSelectMenu_Create_0"], functio
             Wrap.unwrap(Global.__game_lobby.rulebook.artifact_toggle[i]).value = false
         end
         Alarm.add(1, function()
-            -- Rapi is broken, this does the same thing Instance.find(gm.constants.oSelectMenu) is supposed to do
-            -- local selectMenu = Instance.find(gm.constants.oSelectMenu)
-            local selectMenu = gm.CInstance.instance_id_to_CInstance[gm.instance_find(gm.constants.oSelectMenu).id]
-            table.insert(selectMenu.sections, Wrap.unwrap(ArtifactMenu))
+            local selectMenu = Instance.find(gm.constants.oSelectMenu)
+            Array.wrap(selectMenu.sections):push(ArtifactMenu)
             selectMenu.section_number = 4
         end)
         return false

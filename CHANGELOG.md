@@ -1,3 +1,7 @@
+## 1.3.3
+* Fixed error when switching to eclipse
+* fixed options text
+
 ## 1.3.2
 * Updated to rapi
 

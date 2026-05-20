@@ -1,5 +1,8 @@
 return {
     ["gamemode.eclipse.name"] = "Eclipse",
+    ["ui.options.OnyxEclipse.header"] = "ECLIPSE",
+    ["ui.options.OnyxEclipse.ShowArtifacts"] = "Show Artifacts",
+    ["ui.options.OnyxEclipse.ShowArtifacts.desc"] = "Shows Eclipse Artifacts in the default menu",
     difficulty = {
         eclipse = {
             name = "Eclipse",
